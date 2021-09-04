@@ -12,10 +12,6 @@ public class ScheduleBot {
     public static void main(String[] args) {
         getLogger().info("Starting up...");
 
-        BotConfig config = new BotConfig().readConfig();
-
-        System.out.println(config.someString);
-
 //        if (args.length < 1) {
 //            getLogger().error("A token must be provided as the first Program Argument.");
 //            return;

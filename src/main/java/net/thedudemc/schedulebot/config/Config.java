@@ -1,4 +1,4 @@
-package net.thedudemc.schedulebot;
+package net.thedudemc.schedulebot.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
