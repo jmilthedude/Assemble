@@ -1,0 +1,35 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '6.0.0'
+}
+
+apply plugin: 'com.github.johnrengelman.shadow'
+
+mainClassName = "net.thedudemc.schedulebot.ScheduleBot"
+group 'net.thedudemc'
+version '0.1'
+
+sourceCompatibility = 1.16
+
+repositories {
+    mavenCentral()
+    maven {
+        name 'm2-dv8tion'
+        url 'https://m2.dv8tion.net/releases'
+    }
+    //maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots" }
+}
+
+dependencies {
+    implementation("net.dv8tion:JDA:4.3.0_296")
+    implementation('com.google.code.gson:gson:2.8.8')
+    implementation('ch.qos.logback:logback-classic:1.2.5')
+    implementation('org.xerial:sqlite-jdbc:3.36.0.2')
+    implementation("com.vdurmont:emoji-java:5.1.1")
+
+    //implementation("net.thedudemc:dudeconfig:0.5-SNAPSHOT")
+
+}
+
+compileJava.options.encoding = 'UTF-8'
