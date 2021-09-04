@@ -10,7 +10,7 @@ import java.util.Random;
 public abstract class Config {
 
     protected static final Random rand = new Random();
-    private boolean isDirty;
+    private boolean isDirty = true;
 
     public void markDirty() {
         this.isDirty = true;

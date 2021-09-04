@@ -74,6 +74,7 @@ fabric.properties
 .idea/caches/build_file_checksums.ser
 
 /config
+/images
 # Project exclude paths
 /.gradle/
 /build/

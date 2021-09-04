@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,8 @@ public class BotConfig extends Config {
 
     @Expose
     private List<String> permittedRoles = new ArrayList<>();
+    @Expose
+    private String timeZoneId;
 
     @Override
     public String getName() {
@@ -21,6 +24,8 @@ public class BotConfig extends Config {
     protected void reset() {
         this.permittedRoles.add("Admin");
         this.permittedRoles.add("Moderator");
+
+        this.timeZoneId = "Europe/London";
     }
 
     public boolean hasPermission(Member member) {
@@ -41,5 +46,9 @@ public class BotConfig extends Config {
 
     public void removeRole(String role) {
         this.permittedRoles.remove(role);
+    }
+
+    public ZoneId getTimeZone() {
+        return ZoneId.of(this.timeZoneId);
     }
 }
