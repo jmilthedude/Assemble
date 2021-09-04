@@ -19,8 +19,8 @@ public class BotConfig extends Config {
 
     @Override
     protected void reset() {
-        permittedRoles.add("Admin");
-        permittedRoles.add("Moderator");
+        this.permittedRoles.add("Admin");
+        this.permittedRoles.add("Moderator");
     }
 
     public boolean hasPermission(Member member) {
@@ -28,10 +28,18 @@ public class BotConfig extends Config {
     }
 
     private boolean hasPermission(Role role) {
-        return hasPermission(role.getName());
+        return this.hasPermission(role.getName());
     }
 
     private boolean hasPermission(String role) {
-        return permittedRoles.contains(role);
+        return this.permittedRoles.contains(role);
+    }
+
+    public void addPermittedRole(String role) {
+        if (!this.permittedRoles.contains(role)) this.permittedRoles.add(role);
+    }
+
+    public void removeRole(String role) {
+        this.permittedRoles.remove(role);
     }
 }

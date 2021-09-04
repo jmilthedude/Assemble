@@ -10,6 +10,11 @@ import java.util.Random;
 public abstract class Config {
 
     protected static final Random rand = new Random();
+    private boolean isDirty;
+
+    public void markDirty() {
+        this.isDirty = true;
+    }
 
     private static final Gson GSON = new GsonBuilder()
             .excludeFieldsWithoutExposeAnnotation()
@@ -34,19 +39,20 @@ public abstract class Config {
 
     public abstract String getName();
 
-    public <T extends Config> T readConfig() {
+    public Config readConfig() {
         try {
             return GSON.fromJson(new FileReader(this.getConfigFile()), (Type) this.getClass());
         } catch (FileNotFoundException e) {
             this.generateConfig();
         }
 
-        return (T) this;
+        return this;
     }
 
     protected abstract void reset();
 
     public void writeConfig() throws IOException {
+        if (!this.isDirty) return;
         File dir = new File(this.root);
         if (!dir.exists() && !dir.mkdirs()) return;
         if (!this.getConfigFile().exists() && !this.getConfigFile().createNewFile()) return;
@@ -54,6 +60,7 @@ public abstract class Config {
         GSON.toJson(this, writer);
         writer.flush();
         writer.close();
+        this.isDirty = false;
     }
 
 }

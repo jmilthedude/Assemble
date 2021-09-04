@@ -7,6 +7,6 @@ public class BotConfigs {
     public static BotConfig CONFIG;
 
     public static void register() {
-        CONFIG = new BotConfig().readConfig();
+        CONFIG = (BotConfig) new BotConfig().readConfig();
     }
 }
