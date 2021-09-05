@@ -2,6 +2,7 @@ package net.thedudemc.schedulebot.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import net.thedudemc.schedulebot.ScheduleBot;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -63,4 +64,12 @@ public abstract class Config {
         this.isDirty = false;
     }
 
+    protected void save() {
+        try {
+            this.writeConfig();
+        } catch (Exception ex) {
+            ScheduleBot.getLogger().error("There was an error writing the config to file.");
+            ScheduleBot.getLogger().error(ex.getMessage());
+        }
+    }
 }

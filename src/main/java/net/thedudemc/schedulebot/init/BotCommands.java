@@ -1,5 +1,6 @@
 package net.thedudemc.schedulebot.init;
 
+import net.thedudemc.schedulebot.command.ConfigCommand;
 import net.thedudemc.schedulebot.command.ICommand;
 import net.thedudemc.schedulebot.command.ScheduleCommand;
 
@@ -11,6 +12,7 @@ public class BotCommands {
 
     public static void register() {
         register(new ScheduleCommand());
+        register(new ConfigCommand());
     }
 
     private static void register(ICommand command) {

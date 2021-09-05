@@ -40,15 +40,37 @@ public class BotConfig extends Config {
         return this.permittedRoles.contains(role);
     }
 
-    public void addPermittedRole(String role) {
-        if (!this.permittedRoles.contains(role)) this.permittedRoles.add(role);
+    public boolean addPermittedRole(String role) {
+        if (!this.permittedRoles.contains(role)) {
+            this.permittedRoles.add(role);
+            this.markDirty();
+            this.save();
+            return true;
+        }
+        return false;
     }
 
-    public void removeRole(String role) {
-        this.permittedRoles.remove(role);
+    public boolean removeRole(String role) {
+        if (this.permittedRoles.remove(role)) {
+            this.markDirty();
+            this.save();
+            return true;
+        }
+        return false;
     }
 
     public ZoneId getTimeZone() {
         return ZoneId.of(this.timeZoneId);
+    }
+
+    public boolean setTimeZone(String timeZoneId) {
+        this.timeZoneId = timeZoneId;
+        this.markDirty();
+        this.save();
+        return this.timeZoneId.equalsIgnoreCase(timeZoneId);
+    }
+
+    public List<String> getPermittedRoles() {
+        return new ArrayList<>(this.permittedRoles);
     }
 }
