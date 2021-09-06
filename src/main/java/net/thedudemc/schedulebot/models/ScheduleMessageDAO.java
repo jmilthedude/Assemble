@@ -63,7 +63,7 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
                     String content = result.getString(CONTENT);
                     long channelId = result.getLong(CHANNEL_ID);
                     long ownerId = result.getLong(OWNER_ID);
-                    LocalDateTime executionDate = getFromLong(result.getLong(EXECUTION_DATE));
+                    LocalDateTime executionDate = Instant.ofEpochMilli(result.getLong(EXECUTION_DATE)).atZone(BotConfigs.CONFIG.getTimeZone()).toLocalDateTime();
                     boolean recurring = result.getBoolean(RECURRING);
                     Recurrence recurrence = null;
                     if (recurring) {
@@ -100,7 +100,7 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
                     String content = result.getString(CONTENT);
                     long channelId = result.getLong(CHANNEL_ID);
                     long ownerId = result.getLong(OWNER_ID);
-                    LocalDateTime executionDate = getFromLong(result.getLong(EXECUTION_DATE));
+                    LocalDateTime executionDate = Instant.ofEpochMilli(result.getLong(EXECUTION_DATE)).atZone(BotConfigs.CONFIG.getTimeZone()).toLocalDateTime();
                     boolean recurring = result.getBoolean(RECURRING);
                     Recurrence recurrence = null;
                     if (recurring) {
@@ -145,7 +145,7 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
                 statement.setString(2, data.getContent());
                 statement.setLong(3, data.getChannelId());
                 statement.setLong(4, data.getOwnerId());
-                statement.setLong(5, getFromDate(data.getExecutionDate()));
+                statement.setLong(5, data.getExecutionDate().atZone(BotConfigs.CONFIG.getTimeZone()).toInstant().toEpochMilli());
                 statement.setBoolean(6, data.isRecurring());
                 statement.setNull(7, Types.INTEGER);
                 statement.setString(8, "");
@@ -183,15 +183,6 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
     @Override
     public void delete(int id) {
 
-    }
-
-    private LocalDateTime getFromLong(long milliseconds) {
-        return LocalDateTime.ofInstant(Instant.ofEpochMilli(milliseconds),
-                BotConfigs.CONFIG.getTimeZone());
-    }
-
-    private long getFromDate(LocalDateTime date) {
-        return date.atZone(BotConfigs.CONFIG.getTimeZone()).toEpochSecond();
     }
 
 }
