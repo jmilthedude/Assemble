@@ -4,7 +4,6 @@ import net.thedudemc.schedulebot.ScheduleBot;
 import net.thedudemc.schedulebot.database.DatabaseManager;
 import net.thedudemc.schedulebot.init.BotConfigs;
 import net.thedudemc.schedulebot.models.ScheduledMessage;
-import net.thedudemc.schedulebot.models.SetupState;
 
 import java.sql.*;
 import java.time.Instant;
@@ -77,7 +76,7 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
 
                     return new ScheduledMessage(id, title, content,
                             channelId, ownerId, executionDate, recurring,
-                            recurrence, imageFileName, SetupState.READY
+                            recurrence, imageFileName, ScheduledMessage.SetupState.READY
                     );
                 }
             }
@@ -114,7 +113,7 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
 
                     messages.add(new ScheduledMessage(id, title, content,
                             channelId, ownerId, executionDate, recurring,
-                            recurrence, imageFileName, SetupState.READY
+                            recurrence, imageFileName, ScheduledMessage.SetupState.READY
                     ));
                 }
             }

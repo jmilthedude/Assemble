@@ -9,7 +9,6 @@ import net.thedudemc.schedulebot.ScheduleBot;
 import net.thedudemc.schedulebot.database.DatabaseManager;
 import net.thedudemc.schedulebot.init.BotConfigs;
 import net.thedudemc.schedulebot.models.ScheduledMessage;
-import net.thedudemc.schedulebot.models.SetupState;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -63,13 +62,13 @@ public class SetupListener extends ListenerAdapter {
 
     private void startDialog(ScheduledMessage scheduledMessage, TextChannel channel, Message message) {
         channel.sendMessageEmbeds(scheduledMessage.getStatusEmbed()).queue();
-        scheduledMessage.setState(SetupState.TITLE);
+        scheduledMessage.setState(ScheduledMessage.SetupState.TITLE);
     }
 
     private void setMessageTitle(ScheduledMessage scheduledMessage, TextChannel channel, Message message) {
         String title = message.getContentRaw();
         scheduledMessage.setTitle(title);
-        scheduledMessage.setState(SetupState.CONTENT);
+        scheduledMessage.setState(ScheduledMessage.SetupState.CONTENT);
 
         channel.sendMessageEmbeds(scheduledMessage.getStatusEmbed()).queue();
     }
@@ -77,7 +76,7 @@ public class SetupListener extends ListenerAdapter {
     private void setMessageContent(ScheduledMessage scheduledMessage, TextChannel channel, Message message) {
         String content = message.getContentRaw();
         scheduledMessage.setContent(content);
-        scheduledMessage.setState(SetupState.CHANNEL);
+        scheduledMessage.setState(ScheduledMessage.SetupState.CHANNEL);
 
         channel.sendMessageEmbeds(scheduledMessage.getStatusEmbed()).queue();
     }
@@ -87,7 +86,7 @@ public class SetupListener extends ListenerAdapter {
         if (requestedOptional.isPresent()) {
             TextChannel requestedChannel = requestedOptional.get();
             scheduledMessage.setChannelId(requestedChannel.getIdLong());
-            scheduledMessage.setState(SetupState.DATE);
+            scheduledMessage.setState(ScheduledMessage.SetupState.DATE);
 
             channel.sendMessageEmbeds(scheduledMessage.getStatusEmbed()).queue();
         } else {
@@ -105,7 +104,7 @@ public class SetupListener extends ListenerAdapter {
                 throw new IllegalArgumentException("Cannot set to a past date/time");
             }
             scheduledMessage.setExecutionDate(date);
-            scheduledMessage.setState(SetupState.RECURRING);
+            scheduledMessage.setState(ScheduledMessage.SetupState.RECURRING);
 
             channel.sendMessageEmbeds(scheduledMessage.getStatusEmbed()).queue();
 
@@ -123,7 +122,7 @@ public class SetupListener extends ListenerAdapter {
         if (content.equalsIgnoreCase("none")) {
             scheduledMessage.setRecurring(false);
             scheduledMessage.setRecurrence(null);
-            scheduledMessage.setState(SetupState.IMAGE);
+            scheduledMessage.setState(ScheduledMessage.SetupState.IMAGE);
         } else {
             try {
                 String[] args = content.split(" ");
@@ -133,7 +132,7 @@ public class SetupListener extends ListenerAdapter {
                     ScheduledMessage.Recurrence recurrence = new ScheduledMessage.Recurrence(interval, unit);
                     scheduledMessage.setRecurring(true);
                     scheduledMessage.setRecurrence(recurrence);
-                    scheduledMessage.setState(SetupState.IMAGE);
+                    scheduledMessage.setState(ScheduledMessage.SetupState.IMAGE);
 
                 } else
                     throw new IllegalArgumentException("Invalid arguments. Must be <number> <timeUnit> (ie: 10 seconds, 20 minutes, 24 hours, 7 days)");
@@ -150,7 +149,7 @@ public class SetupListener extends ListenerAdapter {
     private void setMessageImage(ScheduledMessage scheduledMessage, TextChannel channel, Message message) {
         if (message.getContentRaw().equalsIgnoreCase("none")) {
             scheduledMessage.setImageFileName("");
-            scheduledMessage.setState(SetupState.CONFIRM);
+            scheduledMessage.setState(ScheduledMessage.SetupState.CONFIRM);
 
             scheduledMessage.sendToChannel(channel);
             channel.sendMessageEmbeds(scheduledMessage.getStatusEmbed()).queue();
@@ -166,7 +165,7 @@ public class SetupListener extends ListenerAdapter {
                         ScheduleBot.getLogger().info("Saved attachment to " + file.getName());
 
                         scheduledMessage.setImageFileName(image.getFileName());
-                        scheduledMessage.setState(SetupState.CONFIRM);
+                        scheduledMessage.setState(ScheduledMessage.SetupState.CONFIRM);
 
                         scheduledMessage.sendToChannel(channel);
 
@@ -182,7 +181,7 @@ public class SetupListener extends ListenerAdapter {
 
     private void confirmMessage(ScheduledMessage scheduledMessage, TextChannel channel, Message message) {
         if (message.getContentRaw().equalsIgnoreCase("confirm")) {
-            scheduledMessage.setState(SetupState.READY);
+            scheduledMessage.setState(ScheduledMessage.SetupState.READY);
 
             int id = DatabaseManager.getInstance().getMessageDao().insert(scheduledMessage);
 

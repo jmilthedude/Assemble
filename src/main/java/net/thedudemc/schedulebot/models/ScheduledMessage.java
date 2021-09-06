@@ -17,7 +17,7 @@ public class ScheduledMessage {
     private String title;
     private String content;
     private long channelId;
-    private long ownerId;
+    private final long ownerId;
     private LocalDateTime executionDate;
     private boolean recurring;
     @Nullable
@@ -81,10 +81,6 @@ public class ScheduledMessage {
 
     public long getOwnerId() {
         return ownerId;
-    }
-
-    public void setOwnerId(long ownerId) {
-        this.ownerId = ownerId;
     }
 
     public LocalDateTime getExecutionDate() {
@@ -253,5 +249,17 @@ public class ScheduledMessage {
         public TimeUnit getUnit() {
             return unit;
         }
+    }
+
+    public enum SetupState {
+        NEW,
+        TITLE,
+        CONTENT,
+        CHANNEL,
+        DATE,
+        RECURRING,
+        IMAGE,
+        CONFIRM,
+        READY
     }
 }
