@@ -191,6 +191,7 @@ public class SetupListener extends ListenerAdapter {
 
             channel.sendMessageEmbeds(scheduledMessage.getStatusEmbed()).queue();
 
+            activeUsers.remove(scheduledMessage.getOwnerId());
         }
     }
 
