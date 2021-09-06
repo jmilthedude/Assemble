@@ -1,7 +1,7 @@
 package net.thedudemc.schedulebot.database;
 
 import net.thedudemc.schedulebot.ScheduleBot;
-import net.thedudemc.schedulebot.models.ScheduleMessageDAO;
+import net.thedudemc.schedulebot.database.dao.ScheduleMessageDAO;
 
 import java.io.File;
 import java.sql.Connection;

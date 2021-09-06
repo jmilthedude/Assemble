@@ -1,8 +1,10 @@
-package net.thedudemc.schedulebot.models;
+package net.thedudemc.schedulebot.database.dao;
 
 import net.thedudemc.schedulebot.ScheduleBot;
 import net.thedudemc.schedulebot.database.DatabaseManager;
 import net.thedudemc.schedulebot.init.BotConfigs;
+import net.thedudemc.schedulebot.models.ScheduledMessage;
+import net.thedudemc.schedulebot.models.SetupState;
 
 import java.sql.*;
 import java.time.Instant;
@@ -65,11 +67,11 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
                     long ownerId = result.getLong(OWNER_ID);
                     LocalDateTime executionDate = Instant.ofEpochMilli(result.getLong(EXECUTION_DATE)).atZone(BotConfigs.CONFIG.getTimeZone()).toLocalDateTime();
                     boolean recurring = result.getBoolean(RECURRING);
-                    Recurrence recurrence = null;
+                    ScheduledMessage.Recurrence recurrence = null;
                     if (recurring) {
                         int interval = result.getInt(INTERVAL);
                         TimeUnit timeUnit = TimeUnit.valueOf(result.getString(TIME_UNIT));
-                        recurrence = new Recurrence(interval, timeUnit);
+                        recurrence = new ScheduledMessage.Recurrence(interval, timeUnit);
                     }
                     String imageFileName = result.getString(IMAGE);
 
@@ -102,11 +104,11 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
                     long ownerId = result.getLong(OWNER_ID);
                     LocalDateTime executionDate = Instant.ofEpochMilli(result.getLong(EXECUTION_DATE)).atZone(BotConfigs.CONFIG.getTimeZone()).toLocalDateTime();
                     boolean recurring = result.getBoolean(RECURRING);
-                    Recurrence recurrence = null;
+                    ScheduledMessage.Recurrence recurrence = null;
                     if (recurring) {
                         int interval = result.getInt(INTERVAL);
                         TimeUnit timeUnit = TimeUnit.valueOf(result.getString(TIME_UNIT));
-                        recurrence = new Recurrence(interval, timeUnit);
+                        recurrence = new ScheduledMessage.Recurrence(interval, timeUnit);
                     }
                     String imageFileName = result.getString(IMAGE);
 

@@ -10,6 +10,7 @@ import java.awt.*;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.TimeUnit;
 
 public class ScheduledMessage {
     private int id;
@@ -233,5 +234,24 @@ public class ScheduledMessage {
                 ", imageFileName='" + imageFileName + '\'' +
                 ", state=" + state +
                 '}';
+    }
+
+    public static class Recurrence {
+
+        private final int interval;
+        private final TimeUnit unit;
+
+        public Recurrence(int interval, TimeUnit unit) {
+            this.interval = interval;
+            this.unit = unit;
+        }
+
+        public int getInterval() {
+            return interval;
+        }
+
+        public TimeUnit getUnit() {
+            return unit;
+        }
     }
 }

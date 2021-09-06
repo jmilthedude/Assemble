@@ -8,7 +8,6 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.thedudemc.schedulebot.ScheduleBot;
 import net.thedudemc.schedulebot.database.DatabaseManager;
 import net.thedudemc.schedulebot.init.BotConfigs;
-import net.thedudemc.schedulebot.models.Recurrence;
 import net.thedudemc.schedulebot.models.ScheduledMessage;
 import net.thedudemc.schedulebot.models.SetupState;
 import org.jetbrains.annotations.NotNull;

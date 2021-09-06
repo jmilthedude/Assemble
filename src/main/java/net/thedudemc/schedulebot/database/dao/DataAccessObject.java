@@ -1,4 +1,4 @@
-package net.thedudemc.schedulebot.models;
+package net.thedudemc.schedulebot.database.dao;
 
 import java.util.List;
 
