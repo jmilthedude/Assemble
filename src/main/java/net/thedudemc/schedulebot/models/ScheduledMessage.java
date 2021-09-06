@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.thedudemc.schedulebot.ScheduleBot;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.io.File;
 import java.time.LocalDateTime;
@@ -18,13 +19,31 @@ public class ScheduledMessage {
     private long ownerId;
     private LocalDateTime executionDate;
     private boolean recurring;
+    @Nullable
     private Recurrence recurrence;
+    @Nullable
     private String imageFileName;
     private SetupState state;
 
     public ScheduledMessage(Long ownerId) {
         this.ownerId = ownerId;
         this.state = SetupState.NEW;
+    }
+
+    public ScheduledMessage(int id, String title, String content,
+                            long channelId, long ownerId, LocalDateTime executionDate,
+                            boolean recurring, @Nullable Recurrence recurrence, @Nullable String imageFileName,
+                            SetupState state) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.channelId = channelId;
+        this.ownerId = ownerId;
+        this.executionDate = executionDate;
+        this.recurring = recurring;
+        this.recurrence = recurrence;
+        this.imageFileName = imageFileName;
+        this.state = state;
     }
 
     public int getId() {
@@ -83,19 +102,21 @@ public class ScheduledMessage {
         this.recurring = recurring;
     }
 
-    public Recurrence getRecurrence() {
+    public @Nullable
+    Recurrence getRecurrence() {
         return recurrence;
     }
 
-    public void setRecurrence(Recurrence recurrence) {
+    public void setRecurrence(@Nullable Recurrence recurrence) {
         this.recurrence = recurrence;
     }
 
-    public String getImageFileName() {
+    public @Nullable
+    String getImageFileName() {
         return imageFileName;
     }
 
-    public void setImageFileName(String imageFileName) {
+    public void setImageFileName(@Nullable String imageFileName) {
         this.imageFileName = imageFileName;
     }
 
@@ -109,7 +130,7 @@ public class ScheduledMessage {
 
 
     public void sendToChannel(TextChannel channel) {
-        if (!this.imageFileName.isEmpty()) {
+        if (this.imageFileName != null && !this.imageFileName.isEmpty()) {
             File imageFile = new File("./images/" + this.imageFileName);
 
             channel.sendFile(imageFile)
@@ -186,7 +207,7 @@ public class ScheduledMessage {
                         .setColor(Color.CYAN)
                         .build();
             }
-            case SUCCESS -> {
+            case READY -> {
                 return new EmbedBuilder()
                         .setTitle("Setup Complete!")
                         .addField("", "Message ID: " + this.getId(), false)

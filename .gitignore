@@ -79,3 +79,4 @@ fabric.properties
 /.gradle/
 /build/
 /build/classes/java/main/
+db/

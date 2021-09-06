@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.thedudemc.schedulebot.ScheduleBot;
+import net.thedudemc.schedulebot.database.DatabaseManager;
 import net.thedudemc.schedulebot.init.BotConfigs;
 import net.thedudemc.schedulebot.models.Recurrence;
 import net.thedudemc.schedulebot.models.ScheduledMessage;
@@ -50,14 +51,14 @@ public class SetupListener extends ListenerAdapter {
 
     private void handleMessage(ScheduledMessage scheduledMessage, TextChannel channel, Message message) {
         switch (scheduledMessage.getState()) {
-            case NEW ->       startDialog(scheduledMessage, channel, message);
-            case TITLE ->     setMessageTitle(scheduledMessage, channel, message);
-            case CONTENT ->   setMessageContent(scheduledMessage, channel, message);
-            case CHANNEL ->   setMessageChannel(scheduledMessage, channel, message);
-            case DATE ->      setMessageDate(scheduledMessage, channel, message);
+            case NEW -> startDialog(scheduledMessage, channel, message);
+            case TITLE -> setMessageTitle(scheduledMessage, channel, message);
+            case CONTENT -> setMessageContent(scheduledMessage, channel, message);
+            case CHANNEL -> setMessageChannel(scheduledMessage, channel, message);
+            case DATE -> setMessageDate(scheduledMessage, channel, message);
             case RECURRING -> setMessageRecurrence(scheduledMessage, channel, message);
-            case IMAGE ->     setMessageImage(scheduledMessage, channel, message);
-            case CONFIRM ->   confirmMessage(scheduledMessage, channel, message);
+            case IMAGE -> setMessageImage(scheduledMessage, channel, message);
+            case CONFIRM -> confirmMessage(scheduledMessage, channel, message);
         }
     }
 
@@ -182,9 +183,14 @@ public class SetupListener extends ListenerAdapter {
 
     private void confirmMessage(ScheduledMessage scheduledMessage, TextChannel channel, Message message) {
         if (message.getContentRaw().equalsIgnoreCase("confirm")) {
-            scheduledMessage.setState(SetupState.SUCCESS);
+            scheduledMessage.setState(SetupState.READY);
+
+            int id = DatabaseManager.getInstance().getMessageDao().insert(scheduledMessage);
+
+            scheduledMessage.setId(id);
 
             channel.sendMessageEmbeds(scheduledMessage.getStatusEmbed()).queue();
+
         }
     }
 

@@ -9,5 +9,5 @@ public enum SetupState {
     RECURRING,
     IMAGE,
     CONFIRM,
-    SUCCESS
+    READY
 }
