@@ -130,7 +130,7 @@ public class SetupListener extends ListenerAdapter {
                 if (args.length == 2) {
                     int interval = Integer.parseInt(args[0]);
                     TimeUnit unit = TimeUnit.valueOf(args[1].toUpperCase());
-                    Recurrence recurrence = new Recurrence(interval, unit);
+                    ScheduledMessage.Recurrence recurrence = new ScheduledMessage.Recurrence(interval, unit);
                     scheduledMessage.setRecurring(true);
                     scheduledMessage.setRecurrence(recurrence);
                     scheduledMessage.setState(SetupState.IMAGE);
