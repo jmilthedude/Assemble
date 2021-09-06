@@ -182,8 +182,19 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
     }
 
     @Override
-    public void delete(int id) {
+    public boolean delete(int id) {
+        this.createTable("Messages");
+        String query = "DELETE FROM Messages WHERE " + ID + " = ?";
+        try (Connection connection = DatabaseManager.getInstance().getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setInt(1, id);
 
+                return statement.executeUpdate() > 0;
+            }
+        } catch (SQLException exception) {
+            ScheduleBot.getLogger().error(exception.getMessage());
+        }
+        return false;
     }
 
 }

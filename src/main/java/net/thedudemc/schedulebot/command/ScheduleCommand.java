@@ -33,7 +33,7 @@ public class ScheduleCommand implements ICommand {
         if (args.length == 1) {
             if ("new".equalsIgnoreCase(args[0])) {
                 if (!SetupListener.initiateScheduleSetup(member)) {
-                    // active setup already exists.
+                    replyError((TextChannel) channel, "You cannot start a new scheduled message while actively creating one.");
                 }
             } else if ("list".equalsIgnoreCase(args[0])) {
                 List<ScheduledMessage> messages = DatabaseManager.getInstance().getMessageDao().selectAll();
@@ -41,7 +41,7 @@ public class ScheduleCommand implements ICommand {
                     sendMessageList((TextChannel) channel, messages);
                 }
             } else {
-
+                replyError((TextChannel) channel, "Invalid Argument.");
             }
         } else if (args.length == 2) {
             String messageIdInput = args[1];
@@ -51,12 +51,16 @@ public class ScheduleCommand implements ICommand {
                 if (scheduledMessage != null) {
                     scheduledMessage.sendToChannel((TextChannel) channel);
                 } else {
-                    ScheduleBot.getLogger().error("No message found with ID: " + messageId);
+                    replyError((TextChannel) channel, "No message found with that ID.");
                 }
             } else if ("delete".equalsIgnoreCase(args[0])) {
-
+                if (DatabaseManager.getInstance().getMessageDao().delete(messageId)) {
+                    replySuccess((TextChannel) channel, "The message was successfully deleted. ID: " + messageId);
+                } else {
+                    replyError((TextChannel) channel, "No message found with that ID.");
+                }
             } else {
-
+                replyError((TextChannel) channel, "Invalid Argument.");
             }
         }
     }

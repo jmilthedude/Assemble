@@ -42,7 +42,6 @@ public class ScheduleBot extends ListenerAdapter {
     @Override
     public void onReady(@NotNull ReadyEvent event) {
         BotConfigs.register();
-        //BotData.register();
         BotListeners.register();
         BotCommands.register();
 

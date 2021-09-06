@@ -112,23 +112,6 @@ public class ConfigCommand implements ICommand {
         channel.sendMessageEmbeds(builder.build()).queue();
     }
 
-    public void replyError(TextChannel channel, String response) {
-        EmbedBuilder builder = new EmbedBuilder()
-                .setTitle("Invalid Command")
-                .addField("Error Message", response, false)
-                .setFooter("Type \"-config help\" for usage.")
-                .setColor(Color.RED);
-        channel.sendMessageEmbeds(builder.build()).queue();
-    }
-
-    public void replySuccess(TextChannel channel, String response) {
-        EmbedBuilder builder = new EmbedBuilder()
-                .setTitle("Success!")
-                .addField("", response, false)
-                .setColor(Color.GREEN);
-        channel.sendMessageEmbeds(builder.build()).queue();
-    }
-
     @Override
     public boolean canExecute(Member member) {
         return member.isOwner() || BotConfigs.CONFIG.hasPermission(member);
