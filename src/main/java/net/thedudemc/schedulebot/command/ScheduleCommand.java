@@ -28,7 +28,10 @@ public class ScheduleCommand implements ICommand {
     @Override
     public void execute(@NotNull Guild guild, @NotNull Member member, MessageChannel channel, Message message, @Nullable String[] args) {
         if (args == null || args.length == 0) return; // this command requires arguments
-        if (!channel.getName().equalsIgnoreCase("schedule-setup")) return;
+        if (!channel.getName().equalsIgnoreCase("schedule-setup")) {
+            replyError((TextChannel) channel, "You cannot send that command in this channel.");
+            return;
+        }
 
         if (args.length == 1) {
             if ("new".equalsIgnoreCase(args[0])) {
@@ -39,6 +42,8 @@ public class ScheduleCommand implements ICommand {
                 List<ScheduledMessage> messages = DatabaseManager.getInstance().getMessageDao().selectAll();
                 if (!messages.isEmpty()) {
                     sendMessageList((TextChannel) channel, messages);
+                } else {
+                    replyError((TextChannel) channel, "There are no scheduled messages to list.");
                 }
             } else {
                 replyError((TextChannel) channel, "Invalid Argument.");
@@ -57,11 +62,13 @@ public class ScheduleCommand implements ICommand {
                 if (DatabaseManager.getInstance().getMessageDao().delete(messageId)) {
                     replySuccess((TextChannel) channel, "The message was successfully deleted. ID: " + messageId);
                 } else {
-                    replyError((TextChannel) channel, "No message found with that ID.");
+                    replyError((TextChannel) channel, "No message found with that ID or there was an error. See console if you believe this was an error.");
                 }
             } else {
                 replyError((TextChannel) channel, "Invalid Argument.");
             }
+        } else {
+            replyError((TextChannel) channel, "Invalid Arguments.");
         }
     }
 

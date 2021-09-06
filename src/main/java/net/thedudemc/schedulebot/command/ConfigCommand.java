@@ -52,6 +52,8 @@ public class ConfigCommand implements ICommand {
             } else if ("roles".equalsIgnoreCase(args[0])) {
                 if ("list".equalsIgnoreCase(args[1])) {
                     printRoles((TextChannel) channel);
+                } else {
+                    replyError((TextChannel) channel, "Invalid Arguments.");
                 }
             } else {
                 replyError((TextChannel) channel, "That is not a valid config option.");
