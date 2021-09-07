@@ -7,7 +7,7 @@ import net.thedudemc.schedulebot.models.ScheduledMessage;
 
 import java.sql.*;
 import java.time.Instant;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,12 +65,12 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
                     String content = result.getString(CONTENT);
                     long channelId = result.getLong(CHANNEL_ID);
                     long ownerId = result.getLong(OWNER_ID);
-                    LocalDateTime executionDate = Instant.ofEpochMilli(result.getLong(EXECUTION_DATE)).atZone(BotConfigs.CONFIG.getTimeZone()).toLocalDateTime();
+                    ZonedDateTime executionDate = Instant.ofEpochMilli(result.getLong(EXECUTION_DATE)).atZone(BotConfigs.CONFIG.getTimeZone());
                     boolean recurring = result.getBoolean(RECURRING);
                     ScheduledMessage.Recurrence recurrence = null;
                     if (recurring) {
                         int interval = result.getInt(INTERVAL);
-                        ChronoUnit timeUnit = ChronoUnit.valueOf(result.getString(TIME_UNIT));
+                        ChronoUnit timeUnit = ChronoUnit.valueOf(result.getString(TIME_UNIT).toUpperCase());
                         recurrence = new ScheduledMessage.Recurrence(interval, timeUnit);
                     }
                     String imageFileName = result.getString(IMAGE);
@@ -102,12 +102,12 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
                     String content = result.getString(CONTENT);
                     long channelId = result.getLong(CHANNEL_ID);
                     long ownerId = result.getLong(OWNER_ID);
-                    LocalDateTime executionDate = Instant.ofEpochMilli(result.getLong(EXECUTION_DATE)).atZone(BotConfigs.CONFIG.getTimeZone()).toLocalDateTime();
+                    ZonedDateTime executionDate = Instant.ofEpochMilli(result.getLong(EXECUTION_DATE)).atZone(BotConfigs.CONFIG.getTimeZone());
                     boolean recurring = result.getBoolean(RECURRING);
                     ScheduledMessage.Recurrence recurrence = null;
                     if (recurring) {
                         int interval = result.getInt(INTERVAL);
-                        ChronoUnit timeUnit = ChronoUnit.valueOf(result.getString(TIME_UNIT));
+                        ChronoUnit timeUnit = ChronoUnit.valueOf(result.getString(TIME_UNIT).toUpperCase());
                         recurrence = new ScheduledMessage.Recurrence(interval, timeUnit);
                     }
                     String imageFileName = result.getString(IMAGE);
@@ -147,7 +147,7 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
                 statement.setString(2, data.getContent());
                 statement.setLong(3, data.getChannelId());
                 statement.setLong(4, data.getOwnerId());
-                statement.setLong(5, data.getExecutionDate().atZone(BotConfigs.CONFIG.getTimeZone()).toInstant().toEpochMilli());
+                statement.setLong(5, data.getExecutionDate().toInstant().toEpochMilli());
                 statement.setBoolean(6, data.isRecurring());
                 statement.setNull(7, Types.INTEGER);
                 statement.setString(8, "");
@@ -199,7 +199,7 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
                 statement.setString(2, data.getContent());
                 statement.setLong(3, data.getChannelId());
                 statement.setLong(4, data.getOwnerId());
-                statement.setLong(5, data.getExecutionDate().atZone(BotConfigs.CONFIG.getTimeZone()).toInstant().toEpochMilli());
+                statement.setLong(5, data.getExecutionDate().toInstant().toEpochMilli());
                 statement.setBoolean(6, data.isRecurring());
                 statement.setNull(7, Types.INTEGER);
                 statement.setString(8, "");
@@ -241,7 +241,7 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
         return false;
     }
 
-    public List<Integer> shouldExecute() {
+    public List<Integer> getIdsReadyToExecute() {
         List<Integer> messageIds = new ArrayList<>();
         String query = "SELECT " + ID + ", " + EXECUTION_DATE + " FROM Messages";
         try (Connection connection = DatabaseManager.getInstance().getConnection()) {
@@ -250,8 +250,9 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
                 ResultSet result = statement.executeQuery(query);
                 while (result.next()) {
                     int id = result.getInt(ID);
-                    LocalDateTime executionDate = Instant.ofEpochMilli(result.getLong(EXECUTION_DATE)).atZone(BotConfigs.CONFIG.getTimeZone()).toLocalDateTime();
-                    if (LocalDateTime.now(BotConfigs.CONFIG.getTimeZone()).isAfter(executionDate)) {
+                    ZonedDateTime now = ZonedDateTime.now(BotConfigs.CONFIG.getTimeZone());
+                    ZonedDateTime executionDate = Instant.ofEpochMilli(result.getLong(EXECUTION_DATE)).atZone(BotConfigs.CONFIG.getTimeZone());
+                    if (executionDate.isBefore(now)) {
                         messageIds.add(id);
                     }
                 }

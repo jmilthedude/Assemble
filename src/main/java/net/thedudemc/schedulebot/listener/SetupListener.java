@@ -1,5 +1,6 @@
 package net.thedudemc.schedulebot.listener;
 
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -11,13 +12,13 @@ import net.thedudemc.schedulebot.init.BotConfigs;
 import net.thedudemc.schedulebot.models.ScheduledMessage;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.*;
 import java.io.File;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
-import java.time.chrono.ChronoLocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
-import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +39,7 @@ public class SetupListener extends ListenerAdapter {
 
 
         if (event.getMessage().getContentRaw().equalsIgnoreCase("cancel")) {
+            replySuccess(event.getChannel(), "You have cancelled this scheduled message setup.");
             activeUsers.remove(member.getIdLong());
             return;
         }
@@ -90,7 +92,7 @@ public class SetupListener extends ListenerAdapter {
 
             channel.sendMessageEmbeds(scheduledMessage.getStatusEmbed()).queue();
         } else {
-            // no channel found
+            replyError(channel, "No channel found by that name.");
         }
     }
 
@@ -99,21 +101,19 @@ public class SetupListener extends ListenerAdapter {
             DateTimeFormatter formatter = new DateTimeFormatterBuilder()
                     .appendPattern("MM/dd/yyyy HH:mm")
                     .toFormatter();
-            LocalDateTime date = LocalDateTime.parse(message.getContentRaw(), formatter);
-            if (date.isBefore(ChronoLocalDateTime.from(LocalDateTime.now().atZone(BotConfigs.CONFIG.getTimeZone())))) {
-                throw new IllegalArgumentException("Cannot set to a past date/time");
+            ZonedDateTime date = LocalDateTime.parse(message.getContentRaw(), formatter).atZone(BotConfigs.CONFIG.getTimeZone());
+            ZonedDateTime now = ZonedDateTime.now(BotConfigs.CONFIG.getTimeZone());
+            if (date.isBefore(now)) {
+                replyError(channel, "Cannot set to a past date/time");
             }
             scheduledMessage.setExecutionDate(date);
             scheduledMessage.setState(ScheduledMessage.SetupState.RECURRING);
 
             channel.sendMessageEmbeds(scheduledMessage.getStatusEmbed()).queue();
-
-        } catch (DateTimeParseException ex) {
-            // tell user date was invalid.
-        } catch (IllegalArgumentException ex) {
-            // tell user it's a past date.
-        } catch (DateTimeException exception) {
+        } catch (IllegalArgumentException exception) {
             ScheduleBot.getLogger().error(exception.getMessage());
+        } catch (DateTimeException exception) {
+            replyError(channel, "Invalid date. Try again with format \"MM/dd/yyyy HH:mm\"");
         }
     }
 
@@ -135,11 +135,11 @@ public class SetupListener extends ListenerAdapter {
                     scheduledMessage.setState(ScheduledMessage.SetupState.IMAGE);
 
                 } else
-                    throw new IllegalArgumentException("Invalid arguments. Must be <number> <timeUnit> (ie: 20 minutes, 24 hours, 7 days)");
+                    throw new IllegalArgumentException("Invalid arguments. Must be <number> <timeUnit> (ie: 20 minutes, 24 hours, 7 days, 1 years)");
             } catch (NumberFormatException exception) {
-                // tell user their first argument wasn't number
+                replyError(channel, "Invalid arguments. First argument must be a number.");
             } catch (IllegalArgumentException exception) {
-                // tell them to use an approptiate Time Unit.
+                replyError(channel, "Invalid argument. Second argument must be an appropriate unit of time.");
             }
         }
 
@@ -147,35 +147,40 @@ public class SetupListener extends ListenerAdapter {
     }
 
     private void setMessageImage(ScheduledMessage scheduledMessage, TextChannel channel, Message message) {
-        if (message.getContentRaw().equalsIgnoreCase("none")) {
-            scheduledMessage.setImageFileName("");
-            scheduledMessage.setState(ScheduledMessage.SetupState.CONFIRM);
+        try {
+            if (message.getContentRaw().equalsIgnoreCase("none")) {
+                scheduledMessage.setImageFileName("");
+                scheduledMessage.setState(ScheduledMessage.SetupState.CONFIRM);
 
-            scheduledMessage.sendToChannel(channel);
-            channel.sendMessageEmbeds(scheduledMessage.getStatusEmbed()).queue();
-        } else if (message.getAttachments().isEmpty()) throw new IllegalArgumentException();
+                scheduledMessage.sendToChannel(channel);
+                channel.sendMessageEmbeds(scheduledMessage.getStatusEmbed()).queue();
+            } else if (message.getAttachments().isEmpty()) throw new IllegalArgumentException("No image uploaded.");
 
-        List<Message.Attachment> attachments = message.getAttachments();
-        Message.Attachment image = attachments.stream().findFirst().orElse(null);
-        if (image != null && image.isImage()) {
-            File path = new File("./images/");
-            path.mkdirs();
-            image.downloadToFile("./images/" + image.getFileName())
-                    .thenAccept(file -> {
-                        ScheduleBot.getLogger().info("Saved attachment to " + file.getName());
+            List<Message.Attachment> attachments = message.getAttachments();
+            Message.Attachment image = attachments.stream().findFirst().orElse(null);
+            if (image != null && image.isImage()) {
+                File path = new File("./images/");
+                path.mkdirs();
+                image.downloadToFile("./images/" + image.getFileName())
+                        .thenAccept(file -> {
+                            ScheduleBot.getLogger().info("Saved attachment to " + file.getName());
 
-                        scheduledMessage.setImageFileName(image.getFileName());
-                        scheduledMessage.setState(ScheduledMessage.SetupState.CONFIRM);
+                            scheduledMessage.setImageFileName(image.getFileName());
+                            scheduledMessage.setState(ScheduledMessage.SetupState.CONFIRM);
 
-                        scheduledMessage.sendToChannel(channel);
+                            scheduledMessage.sendToChannel(channel);
 
-                        channel.sendMessageEmbeds(scheduledMessage.getStatusEmbed()).queue();
-                    })
-                    .exceptionally(exception ->
-                    {
-                        ScheduleBot.getLogger().error(exception.getMessage());
-                        return null;
-                    });
+                            channel.sendMessageEmbeds(scheduledMessage.getStatusEmbed()).queue();
+                        })
+                        .exceptionally(exception ->
+                        {
+                            ScheduleBot.getLogger().error(exception.getMessage());
+                            replyError(channel, "There was a problem downloading the image.");
+                            return null;
+                        });
+            }
+        } catch (IllegalArgumentException exception) {
+            replyError(channel, exception.getMessage());
         }
     }
 
@@ -198,5 +203,21 @@ public class SetupListener extends ListenerAdapter {
 
         activeUsers.put(member.getIdLong(), new ScheduledMessage(member.getIdLong()));
         return true;
+    }
+
+    private void replyError(TextChannel channel, String response) {
+        EmbedBuilder builder = new EmbedBuilder()
+                .setTitle("Invalid Command")
+                .addField("Error Message", response, false)
+                .setColor(Color.RED);
+        channel.sendMessageEmbeds(builder.build()).queue();
+    }
+
+    private void replySuccess(TextChannel channel, String response) {
+        EmbedBuilder builder = new EmbedBuilder()
+                .setTitle("Success!")
+                .addField("", response, false)
+                .setColor(Color.GREEN);
+        channel.sendMessageEmbeds(builder.build()).queue();
     }
 }

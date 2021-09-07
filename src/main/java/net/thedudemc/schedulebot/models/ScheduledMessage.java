@@ -8,7 +8,7 @@ import net.thedudemc.schedulebot.ScheduleBot;
 import javax.annotation.Nullable;
 import java.awt.*;
 import java.io.File;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
@@ -18,7 +18,7 @@ public class ScheduledMessage {
     private String content;
     private long channelId;
     private final long ownerId;
-    private LocalDateTime executionDate;
+    private ZonedDateTime executionDate;
     private boolean recurring;
     @Nullable
     private Recurrence recurrence;
@@ -32,7 +32,7 @@ public class ScheduledMessage {
     }
 
     public ScheduledMessage(int id, String title, String content,
-                            long channelId, long ownerId, LocalDateTime executionDate,
+                            long channelId, long ownerId, ZonedDateTime executionDate,
                             boolean recurring, @Nullable Recurrence recurrence, @Nullable String imageFileName,
                             SetupState state) {
         this.id = id;
@@ -83,11 +83,11 @@ public class ScheduledMessage {
         return ownerId;
     }
 
-    public LocalDateTime getExecutionDate() {
+    public ZonedDateTime getExecutionDate() {
         return executionDate;
     }
 
-    public void setExecutionDate(LocalDateTime executionDate) {
+    public void setExecutionDate(ZonedDateTime executionDate) {
         this.executionDate = executionDate;
     }
 

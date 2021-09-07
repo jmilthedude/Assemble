@@ -1,14 +1,12 @@
 package net.thedudemc.schedulebot.init;
 
-import net.thedudemc.schedulebot.task.CheckMessagesTask;
+import net.thedudemc.schedulebot.task.MessageExecutorTask;
 import net.thedudemc.schedulebot.task.SchedulerTask;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -19,7 +17,7 @@ public class BotTasks {
     private static final List<SchedulerTask> TASKS = new ArrayList<>();
 
     public static void register() {
-        register(new CheckMessagesTask(60000, MILLISECONDS));
+        register(new MessageExecutorTask(60000, MILLISECONDS));
 
         ScheduledExecutorService schedule = Executors.newScheduledThreadPool(TASKS.size());
         TASKS.forEach(task -> schedule.scheduleAtFixedRate(

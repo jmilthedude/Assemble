@@ -6,23 +6,23 @@ import net.thedudemc.schedulebot.database.DatabaseManager;
 import net.thedudemc.schedulebot.init.BotConfigs;
 import net.thedudemc.schedulebot.models.ScheduledMessage;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class CheckMessagesTask extends SchedulerTask {
+public class MessageExecutorTask extends SchedulerTask {
 
-    public CheckMessagesTask(int interval, TimeUnit units) {
+    public MessageExecutorTask(int interval, TimeUnit units) {
         super(interval, units);
     }
 
     @Override
     public void run() {
-        List<Integer> executable = DatabaseManager.getInstance().getMessageDao().shouldExecute();
-        if (executable.isEmpty()) return;
+        List<Integer> executableIds = DatabaseManager.getInstance().getMessageDao().getIdsReadyToExecute();
+        if (executableIds.isEmpty()) return;
 
-        List<ScheduledMessage> messages = DatabaseManager.getInstance().getMessageDao().getMessagesToExecute(executable);
+        List<ScheduledMessage> messages = DatabaseManager.getInstance().getMessageDao().getMessagesToExecute(executableIds);
 
         for (ScheduledMessage message : messages) {
             TextChannel channel = ScheduleBot.getJDA().getTextChannelById(message.getChannelId());
@@ -40,13 +40,12 @@ public class CheckMessagesTask extends SchedulerTask {
 
     }
 
-    private LocalDateTime getNewDate(ScheduledMessage scheduledMessage) {
-        LocalDateTime now = LocalDateTime.now(BotConfigs.CONFIG.getTimeZone());
+    private ZonedDateTime getNewDate(ScheduledMessage scheduledMessage) {
+        ZonedDateTime now = ZonedDateTime.now(BotConfigs.CONFIG.getTimeZone());
         ScheduledMessage.Recurrence recurrence = scheduledMessage.getRecurrence();
         assert recurrence != null;
         int interval = recurrence.getInterval();
-        ChronoUnit timeUnit = recurrence.getUnit();
-        ChronoUnit chronoUnit = ChronoUnit.valueOf(timeUnit.name());
+        ChronoUnit chronoUnit = recurrence.getUnit();
 
         return now.plus(interval, chronoUnit).truncatedTo(ChronoUnit.MINUTES);
     }
