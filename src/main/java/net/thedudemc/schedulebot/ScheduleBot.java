@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.thedudemc.schedulebot.init.BotCommands;
 import net.thedudemc.schedulebot.init.BotConfigs;
 import net.thedudemc.schedulebot.init.BotListeners;
+import net.thedudemc.schedulebot.init.BotTasks;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +45,7 @@ public class ScheduleBot extends ListenerAdapter {
         BotConfigs.register();
         BotListeners.register();
         BotCommands.register();
+        BotTasks.register();
 
         ScheduleBot.getLogger().info("ScheduleBot setup complete!");
     }

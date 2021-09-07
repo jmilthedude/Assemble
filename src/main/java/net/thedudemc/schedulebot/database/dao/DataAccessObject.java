@@ -12,7 +12,7 @@ public interface DataAccessObject<T> {
 
     int insert(T data);
 
-    void update(T data);
+    int update(T data);
 
     boolean delete(int id);
 

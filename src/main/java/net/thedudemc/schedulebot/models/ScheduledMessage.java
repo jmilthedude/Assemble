@@ -135,11 +135,13 @@ public class ScheduledMessage {
                             .setTitle(this.title)
                             .addField("", this.content, true)
                             .setImage("attachment://" + this.imageFileName)
+                            .setColor(Color.GREEN)
                             .build()).queue();
         } else {
             channel.sendMessageEmbeds(new EmbedBuilder()
                     .setTitle(this.title)
                     .addField("", this.content, true)
+                    .setColor(Color.GREEN)
                     .build()).queue();
         }
     }

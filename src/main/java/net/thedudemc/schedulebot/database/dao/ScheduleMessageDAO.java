@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
 
@@ -166,7 +167,7 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
                     if (generatedKeys.next()) {
                         return generatedKeys.getInt(1);
                     } else {
-                        throw new SQLException("Creating user failed, no ID obtained.");
+                        throw new SQLException("Creating message failed, no ID obtained.");
                     }
                 }
             }
@@ -177,8 +178,51 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
     }
 
     @Override
-    public void update(ScheduledMessage data) {
+    public int update(ScheduledMessage data) {
 
+        this.createTable("Messages");
+        String query = "UPDATE Messages " +
+                "SET " + TITLE + " = ?," +
+                " " + CONTENT + " = ?," +
+                " " + CHANNEL_ID + " = ?," +
+                " " + OWNER_ID + " = ?," +
+                " " + EXECUTION_DATE + " = ?," +
+                " " + RECURRING + " = ?," +
+                " " + INTERVAL + " = ?," +
+                " " + TIME_UNIT + " = ?," +
+                " " + IMAGE + " = ? WHERE ID = ?";
+
+        try (Connection connection = DatabaseManager.getInstance().getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+
+                statement.setString(1, data.getTitle());
+                statement.setString(2, data.getContent());
+                statement.setLong(3, data.getChannelId());
+                statement.setLong(4, data.getOwnerId());
+                statement.setLong(5, data.getExecutionDate().atZone(BotConfigs.CONFIG.getTimeZone()).toInstant().toEpochMilli());
+                statement.setBoolean(6, data.isRecurring());
+                statement.setNull(7, Types.INTEGER);
+                statement.setString(8, "");
+                if (data.isRecurring()) {
+                    statement.setInt(7, data.getRecurrence().getInterval());
+                    statement.setString(8, data.getRecurrence().getUnit().toString());
+                }
+                statement.setString(9, data.getImageFileName() == null ? "" : data.getImageFileName());
+                statement.setInt(10, data.getId());
+
+                int affectedRows = statement.executeUpdate();
+
+                if (affectedRows == 0) {
+                    throw new SQLException("Updating message failed, no rows affected.");
+                }
+
+                return affectedRows;
+
+            }
+        } catch (SQLException exception) {
+            ScheduleBot.getLogger().error(exception.getMessage());
+        }
+        return -1;
     }
 
     @Override
@@ -195,6 +239,32 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
             ScheduleBot.getLogger().error(exception.getMessage());
         }
         return false;
+    }
+
+    public List<Integer> shouldExecute() {
+        List<Integer> messageIds = new ArrayList<>();
+        String query = "SELECT " + ID + ", " + EXECUTION_DATE + " FROM Messages";
+        try (Connection connection = DatabaseManager.getInstance().getConnection()) {
+            try (Statement statement = connection.createStatement()) {
+
+                ResultSet result = statement.executeQuery(query);
+                while (result.next()) {
+                    int id = result.getInt(ID);
+                    LocalDateTime executionDate = Instant.ofEpochMilli(result.getLong(EXECUTION_DATE)).atZone(BotConfigs.CONFIG.getTimeZone()).toLocalDateTime();
+                    if (LocalDateTime.now(BotConfigs.CONFIG.getTimeZone()).isAfter(executionDate)) {
+                        messageIds.add(id);
+                    }
+                }
+            }
+        } catch (SQLException exception) {
+            ScheduleBot.getLogger().error(exception.getMessage());
+        }
+        return messageIds;
+    }
+
+    public List<ScheduledMessage> getMessagesToExecute(List<Integer> messageIds) {
+        List<ScheduledMessage> allMessages = selectAll();
+        return allMessages.stream().filter(message -> messageIds.contains(message.getId())).collect(Collectors.toList());
     }
 
 }
