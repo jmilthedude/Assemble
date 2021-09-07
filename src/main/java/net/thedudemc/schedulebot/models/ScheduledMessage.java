@@ -10,7 +10,7 @@ import java.awt.*;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.concurrent.TimeUnit;
+import java.time.temporal.ChronoUnit;
 
 public class ScheduledMessage {
     private int id;
@@ -185,7 +185,7 @@ public class ScheduledMessage {
                         .setTitle("Set repeat interval.")
                         .addField("", "Type \"none\" if to schedule this message once.", false)
                         .addField("", "example: 1 minutes or 30 days.", false)
-                        .addField("", "allowed units: x seconds, x minutes, x hours, x days", false)
+                        .addField("", "allowed units: x minutes, x hours, x days", false)
                         .setFooter("Type \"cancel\" to stop.")
                         .setColor(Color.CYAN)
                         .build();
@@ -237,9 +237,9 @@ public class ScheduledMessage {
     public static class Recurrence {
 
         private final int interval;
-        private final TimeUnit unit;
+        private final ChronoUnit unit;
 
-        public Recurrence(int interval, TimeUnit unit) {
+        public Recurrence(int interval, ChronoUnit unit) {
             this.interval = interval;
             this.unit = unit;
         }
@@ -248,7 +248,7 @@ public class ScheduledMessage {
             return interval;
         }
 
-        public TimeUnit getUnit() {
+        public ChronoUnit getUnit() {
             return unit;
         }
     }

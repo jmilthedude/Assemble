@@ -2,7 +2,6 @@ package net.thedudemc.schedulebot.command;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
-import net.thedudemc.schedulebot.ScheduleBot;
 import net.thedudemc.schedulebot.database.DatabaseManager;
 import net.thedudemc.schedulebot.init.BotConfigs;
 import net.thedudemc.schedulebot.listener.SetupListener;

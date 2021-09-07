@@ -8,9 +8,9 @@ import net.thedudemc.schedulebot.models.ScheduledMessage;
 import java.sql.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
@@ -70,7 +70,7 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
                     ScheduledMessage.Recurrence recurrence = null;
                     if (recurring) {
                         int interval = result.getInt(INTERVAL);
-                        TimeUnit timeUnit = TimeUnit.valueOf(result.getString(TIME_UNIT));
+                        ChronoUnit timeUnit = ChronoUnit.valueOf(result.getString(TIME_UNIT));
                         recurrence = new ScheduledMessage.Recurrence(interval, timeUnit);
                     }
                     String imageFileName = result.getString(IMAGE);
@@ -107,7 +107,7 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
                     ScheduledMessage.Recurrence recurrence = null;
                     if (recurring) {
                         int interval = result.getInt(INTERVAL);
-                        TimeUnit timeUnit = TimeUnit.valueOf(result.getString(TIME_UNIT));
+                        ChronoUnit timeUnit = ChronoUnit.valueOf(result.getString(TIME_UNIT));
                         recurrence = new ScheduledMessage.Recurrence(interval, timeUnit);
                     }
                     String imageFileName = result.getString(IMAGE);

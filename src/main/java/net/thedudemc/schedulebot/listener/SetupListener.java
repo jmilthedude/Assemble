@@ -18,10 +18,10 @@ import java.time.chrono.ChronoLocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 public class SetupListener extends ListenerAdapter {
 
@@ -128,14 +128,14 @@ public class SetupListener extends ListenerAdapter {
                 String[] args = content.split(" ");
                 if (args.length == 2) {
                     int interval = Integer.parseInt(args[0]);
-                    TimeUnit unit = TimeUnit.valueOf(args[1].toUpperCase());
+                    ChronoUnit unit = ChronoUnit.valueOf(args[1].toUpperCase());
                     ScheduledMessage.Recurrence recurrence = new ScheduledMessage.Recurrence(interval, unit);
                     scheduledMessage.setRecurring(true);
                     scheduledMessage.setRecurrence(recurrence);
                     scheduledMessage.setState(ScheduledMessage.SetupState.IMAGE);
 
                 } else
-                    throw new IllegalArgumentException("Invalid arguments. Must be <number> <timeUnit> (ie: 10 seconds, 20 minutes, 24 hours, 7 days)");
+                    throw new IllegalArgumentException("Invalid arguments. Must be <number> <timeUnit> (ie: 20 minutes, 24 hours, 7 days)");
             } catch (NumberFormatException exception) {
                 // tell user their first argument wasn't number
             } catch (IllegalArgumentException exception) {
