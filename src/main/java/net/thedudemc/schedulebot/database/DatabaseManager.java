@@ -13,7 +13,7 @@ public class DatabaseManager {
     private static DatabaseManager instance;
     private static Connection connection;
 
-    private final ScheduleMessageDAO messageDao = new ScheduleMessageDAO();
+    private static ScheduleMessageDAO messageDao;
 
     private DatabaseManager() {
     }
@@ -50,6 +50,11 @@ public class DatabaseManager {
     }
 
     public ScheduleMessageDAO getMessageDao() {
-        return this.messageDao;
+        if (messageDao == null) {
+            messageDao = new ScheduleMessageDAO();
+            messageDao.createTable("Messages");
+        }
+
+        return messageDao;
     }
 }

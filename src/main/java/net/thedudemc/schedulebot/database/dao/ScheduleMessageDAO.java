@@ -53,7 +53,6 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
 
     @Override
     public ScheduledMessage select(int id) {
-        this.createTable("Messages");
         String query = "SELECT * FROM Messages WHERE " + ID + " = ?";
         try (Connection connection = DatabaseManager.getInstance().getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(query)) {
@@ -89,7 +88,6 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
 
     @Override
     public List<ScheduledMessage> selectAll() {
-        this.createTable("Messages");
         List<ScheduledMessage> messages = new ArrayList<>();
         String query = "SELECT * FROM Messages";
         try (Connection connection = DatabaseManager.getInstance().getConnection()) {
@@ -126,7 +124,6 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
 
     @Override
     public int insert(ScheduledMessage data) {
-        this.createTable("Messages");
         String query = "INSERT INTO Messages " +
                 "(" +
                 TITLE + ", " +
@@ -152,8 +149,11 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
                 statement.setNull(7, Types.INTEGER);
                 statement.setString(8, "");
                 if (data.isRecurring()) {
-                    statement.setInt(7, data.getRecurrence().getInterval());
-                    statement.setString(8, data.getRecurrence().getUnit().toString());
+                    ScheduledMessage.Recurrence recurrence = data.getRecurrence();
+                    if (recurrence != null) {
+                        statement.setInt(7, recurrence.getInterval());
+                        statement.setString(8, recurrence.getUnit().toString());
+                    }
                 }
                 statement.setString(9, data.getImageFileName() == null ? "" : data.getImageFileName());
 
@@ -179,8 +179,6 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
 
     @Override
     public int update(ScheduledMessage data) {
-
-        this.createTable("Messages");
         String query = "UPDATE Messages " +
                 "SET " + TITLE + " = ?," +
                 " " + CONTENT + " = ?," +
@@ -204,8 +202,11 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
                 statement.setNull(7, Types.INTEGER);
                 statement.setString(8, "");
                 if (data.isRecurring()) {
-                    statement.setInt(7, data.getRecurrence().getInterval());
-                    statement.setString(8, data.getRecurrence().getUnit().toString());
+                    ScheduledMessage.Recurrence recurrence = data.getRecurrence();
+                    if (recurrence != null) {
+                        statement.setInt(7, recurrence.getInterval());
+                        statement.setString(8, recurrence.getUnit().toString());
+                    }
                 }
                 statement.setString(9, data.getImageFileName() == null ? "" : data.getImageFileName());
                 statement.setInt(10, data.getId());
@@ -227,7 +228,6 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
 
     @Override
     public boolean delete(int id) {
-        this.createTable("Messages");
         String query = "DELETE FROM Messages WHERE " + ID + " = ?";
         try (Connection connection = DatabaseManager.getInstance().getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(query)) {
