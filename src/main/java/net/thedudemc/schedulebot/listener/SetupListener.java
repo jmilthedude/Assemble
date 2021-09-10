@@ -105,6 +105,7 @@ public class SetupListener extends ListenerAdapter {
             ZonedDateTime now = ZonedDateTime.now(BotConfigs.CONFIG.getTimeZone());
             if (date.isBefore(now)) {
                 replyError(channel, "Cannot set to a past date/time");
+                return;
             }
             scheduledMessage.setExecutionDate(date);
             scheduledMessage.setState(ScheduledMessage.SetupState.RECURRING);

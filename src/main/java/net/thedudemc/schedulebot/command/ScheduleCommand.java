@@ -10,7 +10,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.List;
 
 public class ScheduleCommand implements ICommand {
@@ -34,7 +37,6 @@ public class ScheduleCommand implements ICommand {
         }
 
         TextChannel channel = (TextChannel) messageChannel;
-
 
         if (args.length == 1) {
             if ("new".equalsIgnoreCase(args[0])) {
@@ -72,6 +74,23 @@ public class ScheduleCommand implements ICommand {
                 }
             } else {
                 replyError(channel, "Invalid Argument.");
+            }
+        } else if (args.length == 4) {
+            if ("daily".equalsIgnoreCase(args[0])) {
+                // -schedule daily #general startDate startTime
+                TextChannel desiredChannel = message.getMentionedChannels().stream().findFirst().orElse(null);
+                if (desiredChannel == null) {
+                    replyError(channel, "Invalid channel.");
+                    return;
+                }
+                String dateString = args[2] + " " + args[3];
+                DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+                        .appendPattern("MM/dd/yyyy HH:mm")
+                        .toFormatter();
+                ZonedDateTime date = LocalDateTime.parse(dateString, formatter).atZone(BotConfigs.CONFIG.getTimeZone());
+                ScheduledMessage scheduledMessage = ScheduledMessage.ofDaily(member.getIdLong(), desiredChannel.getIdLong(), date, "daily");
+                DatabaseManager.getInstance().getMessageDao().insert(scheduledMessage);
+                replySuccess(channel, "Daily message has been added.");
             }
         } else {
             replyError(channel, "Invalid Arguments.");

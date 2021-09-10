@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.thedudemc.schedulebot.ScheduleBot;
+import net.thedudemc.schedulebot.init.BotConfigs;
 
 import javax.annotation.Nullable;
 import java.awt.*;
@@ -45,6 +46,18 @@ public class ScheduledMessage {
         this.recurrence = recurrence;
         this.imageFileName = imageFileName;
         this.state = state;
+    }
+
+    public static ScheduledMessage ofDaily(long ownerId, long channelId, ZonedDateTime executionDate, String message) {
+        ScheduledMessage scheduledMessage = new ScheduledMessage(ownerId);
+        scheduledMessage.setChannelId(channelId);
+        scheduledMessage.setExecutionDate(executionDate);
+        scheduledMessage.setTitle(message);
+        scheduledMessage.setRecurring(true);
+        scheduledMessage.setRecurrence(new Recurrence(1, ChronoUnit.DAYS));
+        scheduledMessage.setContent("");
+        scheduledMessage.setState(SetupState.READY);
+        return scheduledMessage;
     }
 
     public int getId() {
@@ -127,22 +140,31 @@ public class ScheduledMessage {
 
 
     public void sendToChannel(TextChannel channel) {
+        EmbedBuilder builder = new EmbedBuilder();
+        String title = this.title;
+        if (this.title.equalsIgnoreCase("Daily")) {
+            int day = ZonedDateTime.now(BotConfigs.CONFIG.getTimeZone()).getDayOfMonth();
+            title = "Day " + day;
+        }
+        builder.setTitle(title);
+        builder.setColor(Color.MAGENTA);
+        if (this.content != null && !this.content.isEmpty()) {
+            builder.addField("", this.content, false);
+        }
         if (this.imageFileName != null && !this.imageFileName.isEmpty()) {
             File imageFile = new File("./images/" + this.imageFileName);
-
-            channel.sendFile(imageFile)
-                    .setEmbeds(new EmbedBuilder()
-                            .setTitle(this.title)
-                            .addField("", this.content, true)
-                            .setImage("attachment://" + this.imageFileName)
-                            .setColor(Color.GREEN)
-                            .build()).queue();
+            builder.setImage("attachment://" + this.imageFileName);
+            channel.sendFile(imageFile).setEmbeds(builder.build()).queue(message -> {
+                if (this.title.equalsIgnoreCase("daily")) {
+                    message.addReaction("\u2705").queue();
+                }
+            });
         } else {
-            channel.sendMessageEmbeds(new EmbedBuilder()
-                    .setTitle(this.title)
-                    .addField("", this.content, true)
-                    .setColor(Color.GREEN)
-                    .build()).queue();
+            channel.sendMessageEmbeds(builder.build()).queue(message -> {
+                if (this.title.equalsIgnoreCase("daily")) {
+                    message.addReaction("\u2705").queue();
+                }
+            });
         }
     }
 
