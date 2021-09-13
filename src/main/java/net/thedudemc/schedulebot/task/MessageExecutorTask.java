@@ -20,21 +20,21 @@ public class MessageExecutorTask extends SchedulerTask {
     @Override
     public void run() {
         List<Integer> executableIds = DatabaseManager.getInstance().getMessageDao().getIdsReadyToExecute();
-        if (executableIds.isEmpty()) return;
+        if (!executableIds.isEmpty()) {
+            List<ScheduledMessage> messages = DatabaseManager.getInstance().getMessageDao().getMessagesToExecute(executableIds);
 
-        List<ScheduledMessage> messages = DatabaseManager.getInstance().getMessageDao().getMessagesToExecute(executableIds);
+            for (ScheduledMessage message : messages) {
+                TextChannel channel = ScheduleBot.getJDA().getTextChannelById(message.getChannelId());
+                if (channel == null) continue;
 
-        for (ScheduledMessage message : messages) {
-            TextChannel channel = ScheduleBot.getJDA().getTextChannelById(message.getChannelId());
-            if (channel == null) continue;
+                message.sendToChannel(channel);
 
-            message.sendToChannel(channel);
-
-            if (message.isRecurring()) {
-                message.setExecutionDate(getNewDate(message));
-                DatabaseManager.getInstance().getMessageDao().update(message);
-            } else {
-                DatabaseManager.getInstance().getMessageDao().delete(message.getId());
+                if (message.isRecurring()) {
+                    message.setExecutionDate(getNewDate(message));
+                    DatabaseManager.getInstance().getMessageDao().update(message);
+                } else {
+                    DatabaseManager.getInstance().getMessageDao().delete(message.getId());
+                }
             }
         }
 
