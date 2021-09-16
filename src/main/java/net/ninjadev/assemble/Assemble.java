@@ -18,8 +18,6 @@ import java.util.EnumSet;
 
 public class Assemble extends ListenerAdapter {
 
-    //testcommit
-
     private static final Logger LOG = LoggerFactory.getLogger(Assemble.class);
     public static JDA JDA;
 
