@@ -30,7 +30,7 @@ public class DatabaseManager {
             File path = new File("./db/");
             path.mkdirs();
             if (connection == null || connection.isClosed()) {
-                connection = DriverManager.getConnection("jdbc:sqlite:db/schedulebot.sqlite");
+                connection = DriverManager.getConnection("jdbc:sqlite:db/assemble.sqlite");
             }
         } catch (SQLException | SecurityException exception) {
             Assemble.getLogger().error(exception.getMessage());

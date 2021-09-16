@@ -47,7 +47,7 @@ public class Assemble extends ListenerAdapter {
         BotCommands.register();
         BotTasks.register();
 
-        Assemble.getLogger().info("ScheduleBot setup complete!");
+        Assemble.getLogger().info("Assemble setup complete!");
     }
 
     public static Logger getLogger() {
