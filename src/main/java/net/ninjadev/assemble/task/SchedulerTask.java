@@ -1,4 +1,4 @@
-package net.thedudemc.assemble.task;
+package net.ninjadev.assemble.task;
 
 import java.util.concurrent.TimeUnit;
 

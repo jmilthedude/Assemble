@@ -1,14 +1,14 @@
-package net.thedudemc.assemble;
+package net.ninjadev.assemble;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import net.thedudemc.assemble.init.BotCommands;
-import net.thedudemc.assemble.init.BotConfigs;
-import net.thedudemc.assemble.init.BotListeners;
-import net.thedudemc.assemble.init.BotTasks;
+import net.ninjadev.assemble.init.BotCommands;
+import net.ninjadev.assemble.init.BotConfigs;
+import net.ninjadev.assemble.init.BotListeners;
+import net.ninjadev.assemble.init.BotTasks;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

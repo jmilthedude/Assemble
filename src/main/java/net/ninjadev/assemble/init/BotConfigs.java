@@ -1,6 +1,6 @@
-package net.thedudemc.assemble.init;
+package net.ninjadev.assemble.init;
 
-import net.thedudemc.assemble.config.BotConfig;
+import net.ninjadev.assemble.config.BotConfig;
 
 public class BotConfigs {
 

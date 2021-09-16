@@ -1,4 +1,4 @@
-package net.thedudemc.assemble.config;
+package net.ninjadev.assemble.config;
 
 import com.google.gson.annotations.Expose;
 import net.dv8tion.jda.api.entities.Member;

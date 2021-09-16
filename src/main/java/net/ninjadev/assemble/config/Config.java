@@ -1,8 +1,8 @@
-package net.thedudemc.assemble.config;
+package net.ninjadev.assemble.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import net.thedudemc.assemble.Assemble;
+import net.ninjadev.assemble.Assemble;
 
 import java.io.*;
 import java.lang.reflect.Type;

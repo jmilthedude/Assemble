@@ -1,8 +1,8 @@
-package net.thedudemc.assemble.init;
+package net.ninjadev.assemble.init;
 
-import net.thedudemc.assemble.command.ConfigCommand;
-import net.thedudemc.assemble.command.ICommand;
-import net.thedudemc.assemble.command.ScheduleCommand;
+import net.ninjadev.assemble.command.ConfigCommand;
+import net.ninjadev.assemble.command.ICommand;
+import net.ninjadev.assemble.command.ScheduleCommand;
 
 import java.util.HashMap;
 

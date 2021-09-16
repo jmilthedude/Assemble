@@ -1,7 +1,7 @@
-package net.thedudemc.assemble.init;
+package net.ninjadev.assemble.init;
 
-import net.thedudemc.assemble.task.MessageExecutorTask;
-import net.thedudemc.assemble.task.SchedulerTask;
+import net.ninjadev.assemble.task.SchedulerTask;
+import net.ninjadev.assemble.task.MessageExecutorTask;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

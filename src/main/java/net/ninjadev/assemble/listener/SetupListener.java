@@ -1,4 +1,4 @@
-package net.thedudemc.assemble.listener;
+package net.ninjadev.assemble.listener;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
@@ -6,10 +6,10 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.thedudemc.assemble.Assemble;
-import net.thedudemc.assemble.database.DatabaseManager;
-import net.thedudemc.assemble.init.BotConfigs;
-import net.thedudemc.assemble.models.ScheduledMessage;
+import net.ninjadev.assemble.models.ScheduledMessage;
+import net.ninjadev.assemble.Assemble;
+import net.ninjadev.assemble.database.DatabaseManager;
+import net.ninjadev.assemble.init.BotConfigs;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;

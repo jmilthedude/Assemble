@@ -1,11 +1,11 @@
-package net.thedudemc.assemble.command;
+package net.ninjadev.assemble.command;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
-import net.thedudemc.assemble.database.DatabaseManager;
-import net.thedudemc.assemble.init.BotConfigs;
-import net.thedudemc.assemble.listener.SetupListener;
-import net.thedudemc.assemble.models.ScheduledMessage;
+import net.ninjadev.assemble.database.DatabaseManager;
+import net.ninjadev.assemble.init.BotConfigs;
+import net.ninjadev.assemble.listener.SetupListener;
+import net.ninjadev.assemble.models.ScheduledMessage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

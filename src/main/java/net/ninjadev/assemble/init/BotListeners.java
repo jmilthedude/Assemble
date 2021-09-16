@@ -1,8 +1,8 @@
-package net.thedudemc.assemble.init;
+package net.ninjadev.assemble.init;
 
-import net.thedudemc.assemble.Assemble;
-import net.thedudemc.assemble.listener.CommandListener;
-import net.thedudemc.assemble.listener.SetupListener;
+import net.ninjadev.assemble.Assemble;
+import net.ninjadev.assemble.listener.CommandListener;
+import net.ninjadev.assemble.listener.SetupListener;
 
 public class BotListeners {
 

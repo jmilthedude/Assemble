@@ -1,12 +1,12 @@
-package net.thedudemc.assemble.listener;
+package net.ninjadev.assemble.listener;
 
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.thedudemc.assemble.Assemble;
-import net.thedudemc.assemble.command.ICommand;
-import net.thedudemc.assemble.init.BotCommands;
+import net.ninjadev.assemble.command.ICommand;
+import net.ninjadev.assemble.init.BotCommands;
+import net.ninjadev.assemble.Assemble;
 import org.jetbrains.annotations.NotNull;
 
 public class CommandListener extends ListenerAdapter {

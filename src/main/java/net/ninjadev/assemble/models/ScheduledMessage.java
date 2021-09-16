@@ -1,10 +1,10 @@
-package net.thedudemc.assemble.models;
+package net.ninjadev.assemble.models;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.thedudemc.assemble.Assemble;
-import net.thedudemc.assemble.init.BotConfigs;
+import net.ninjadev.assemble.Assemble;
+import net.ninjadev.assemble.init.BotConfigs;
 
 import javax.annotation.Nullable;
 import java.awt.*;

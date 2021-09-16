@@ -1,9 +1,9 @@
-package net.thedudemc.assemble.database.dao;
+package net.ninjadev.assemble.database.dao;
 
-import net.thedudemc.assemble.Assemble;
-import net.thedudemc.assemble.database.DatabaseManager;
-import net.thedudemc.assemble.init.BotConfigs;
-import net.thedudemc.assemble.models.ScheduledMessage;
+import net.ninjadev.assemble.models.ScheduledMessage;
+import net.ninjadev.assemble.Assemble;
+import net.ninjadev.assemble.database.DatabaseManager;
+import net.ninjadev.assemble.init.BotConfigs;
 
 import java.sql.*;
 import java.time.Instant;

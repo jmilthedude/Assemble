@@ -1,4 +1,4 @@
-package net.thedudemc.assemble.database.dao;
+package net.ninjadev.assemble.database.dao;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
-package net.thedudemc.assemble.database;
+package net.ninjadev.assemble.database;
 
-import net.thedudemc.assemble.Assemble;
-import net.thedudemc.assemble.database.dao.ScheduleMessageDAO;
+import net.ninjadev.assemble.Assemble;
+import net.ninjadev.assemble.database.dao.ScheduleMessageDAO;
 
 import java.io.File;
 import java.sql.Connection;
