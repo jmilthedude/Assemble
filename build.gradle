@@ -6,7 +6,7 @@ plugins {
 
 apply plugin: 'com.github.johnrengelman.shadow'
 
-mainClassName = "net.thedudemc.schedulebot.ScheduleBot"
+mainClassName = "net.thedudemc.assemble.Assemble"
 group 'net.thedudemc'
 version '0.1'
 

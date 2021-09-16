@@ -1,10 +1,10 @@
-package net.thedudemc.schedulebot.models;
+package net.thedudemc.assemble.models;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.thedudemc.schedulebot.ScheduleBot;
-import net.thedudemc.schedulebot.init.BotConfigs;
+import net.thedudemc.assemble.Assemble;
+import net.thedudemc.assemble.init.BotConfigs;
 
 import javax.annotation.Nullable;
 import java.awt.*;
@@ -189,7 +189,7 @@ public class ScheduledMessage {
             case CHANNEL -> {
                 return new EmbedBuilder()
                         .setTitle("Set the channel.")
-                        .addField("", "example: " + ScheduleBot.getJDA().getGuilds().get(0).getTextChannels().get(0).getAsMention(), false)
+                        .addField("", "example: " + Assemble.getJDA().getGuilds().get(0).getTextChannels().get(0).getAsMention(), false)
                         .setFooter("Type \"cancel\" to stop.")
                         .setColor(Color.CYAN)
                         .build();

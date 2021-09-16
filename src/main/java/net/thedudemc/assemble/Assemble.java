@@ -1,14 +1,14 @@
-package net.thedudemc.schedulebot;
+package net.thedudemc.assemble;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import net.thedudemc.schedulebot.init.BotCommands;
-import net.thedudemc.schedulebot.init.BotConfigs;
-import net.thedudemc.schedulebot.init.BotListeners;
-import net.thedudemc.schedulebot.init.BotTasks;
+import net.thedudemc.assemble.init.BotCommands;
+import net.thedudemc.assemble.init.BotConfigs;
+import net.thedudemc.assemble.init.BotListeners;
+import net.thedudemc.assemble.init.BotTasks;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,9 +16,9 @@ import org.slf4j.LoggerFactory;
 import javax.security.auth.login.LoginException;
 import java.util.EnumSet;
 
-public class ScheduleBot extends ListenerAdapter {
+public class Assemble extends ListenerAdapter {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ScheduleBot.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Assemble.class);
     public static JDA JDA;
 
     public static void main(String[] args) {
@@ -33,7 +33,7 @@ public class ScheduleBot extends ListenerAdapter {
         try {
             JDABuilder builder = JDABuilder.createDefault(token);
             builder.enableIntents(EnumSet.allOf(GatewayIntent.class));
-            builder.addEventListeners(new ScheduleBot());
+            builder.addEventListeners(new Assemble());
             JDA = builder.build();
         } catch (LoginException ex) {
             getLogger().error("Invalid Token...");
@@ -47,7 +47,7 @@ public class ScheduleBot extends ListenerAdapter {
         BotCommands.register();
         BotTasks.register();
 
-        ScheduleBot.getLogger().info("ScheduleBot setup complete!");
+        Assemble.getLogger().info("ScheduleBot setup complete!");
     }
 
     public static Logger getLogger() {

@@ -1,9 +1,9 @@
-package net.thedudemc.schedulebot.database.dao;
+package net.thedudemc.assemble.database.dao;
 
-import net.thedudemc.schedulebot.ScheduleBot;
-import net.thedudemc.schedulebot.database.DatabaseManager;
-import net.thedudemc.schedulebot.init.BotConfigs;
-import net.thedudemc.schedulebot.models.ScheduledMessage;
+import net.thedudemc.assemble.Assemble;
+import net.thedudemc.assemble.database.DatabaseManager;
+import net.thedudemc.assemble.init.BotConfigs;
+import net.thedudemc.assemble.models.ScheduledMessage;
 
 import java.sql.*;
 import java.time.Instant;
@@ -47,7 +47,7 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
                 statement.execute(query);
             }
         } catch (SQLException exception) {
-            ScheduleBot.getLogger().error(exception.getMessage());
+            Assemble.getLogger().error(exception.getMessage());
         }
     }
 
@@ -81,7 +81,7 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
                 }
             }
         } catch (SQLException exception) {
-            ScheduleBot.getLogger().error(exception.getMessage());
+            Assemble.getLogger().error(exception.getMessage());
         }
         return null;
     }
@@ -117,7 +117,7 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
                 }
             }
         } catch (SQLException exception) {
-            ScheduleBot.getLogger().error(exception.getMessage());
+            Assemble.getLogger().error(exception.getMessage());
         }
         return messages;
     }
@@ -172,7 +172,7 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
                 }
             }
         } catch (SQLException exception) {
-            ScheduleBot.getLogger().error(exception.getMessage());
+            Assemble.getLogger().error(exception.getMessage());
         }
         return -1;
     }
@@ -221,7 +221,7 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
 
             }
         } catch (SQLException exception) {
-            ScheduleBot.getLogger().error(exception.getMessage());
+            Assemble.getLogger().error(exception.getMessage());
         }
         return -1;
     }
@@ -236,7 +236,7 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
                 return statement.executeUpdate() > 0;
             }
         } catch (SQLException exception) {
-            ScheduleBot.getLogger().error(exception.getMessage());
+            Assemble.getLogger().error(exception.getMessage());
         }
         return false;
     }
@@ -258,7 +258,7 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
                 }
             }
         } catch (SQLException exception) {
-            ScheduleBot.getLogger().error(exception.getMessage());
+            Assemble.getLogger().error(exception.getMessage());
         }
         return messageIds;
     }

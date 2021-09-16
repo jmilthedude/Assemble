@@ -1,11 +1,11 @@
-package net.thedudemc.schedulebot.command;
+package net.thedudemc.assemble.command;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
-import net.thedudemc.schedulebot.database.DatabaseManager;
-import net.thedudemc.schedulebot.init.BotConfigs;
-import net.thedudemc.schedulebot.listener.SetupListener;
-import net.thedudemc.schedulebot.models.ScheduledMessage;
+import net.thedudemc.assemble.database.DatabaseManager;
+import net.thedudemc.assemble.init.BotConfigs;
+import net.thedudemc.assemble.listener.SetupListener;
+import net.thedudemc.assemble.models.ScheduledMessage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

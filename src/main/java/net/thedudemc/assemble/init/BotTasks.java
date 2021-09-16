@@ -1,7 +1,7 @@
-package net.thedudemc.schedulebot.init;
+package net.thedudemc.assemble.init;
 
-import net.thedudemc.schedulebot.task.MessageExecutorTask;
-import net.thedudemc.schedulebot.task.SchedulerTask;
+import net.thedudemc.assemble.task.MessageExecutorTask;
+import net.thedudemc.assemble.task.SchedulerTask;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

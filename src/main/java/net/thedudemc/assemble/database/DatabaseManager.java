@@ -1,7 +1,7 @@
-package net.thedudemc.schedulebot.database;
+package net.thedudemc.assemble.database;
 
-import net.thedudemc.schedulebot.ScheduleBot;
-import net.thedudemc.schedulebot.database.dao.ScheduleMessageDAO;
+import net.thedudemc.assemble.Assemble;
+import net.thedudemc.assemble.database.dao.ScheduleMessageDAO;
 
 import java.io.File;
 import java.sql.Connection;
@@ -33,7 +33,7 @@ public class DatabaseManager {
                 connection = DriverManager.getConnection("jdbc:sqlite:db/schedulebot.sqlite");
             }
         } catch (SQLException | SecurityException exception) {
-            ScheduleBot.getLogger().error(exception.getMessage());
+            Assemble.getLogger().error(exception.getMessage());
         }
 
         return connection;
@@ -45,7 +45,7 @@ public class DatabaseManager {
                 connection.close();
             }
         } catch (SQLException exception) {
-            ScheduleBot.getLogger().error(exception.getMessage());
+            Assemble.getLogger().error(exception.getMessage());
         }
     }
 

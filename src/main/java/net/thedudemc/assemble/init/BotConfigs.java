@@ -1,6 +1,6 @@
-package net.thedudemc.schedulebot.init;
+package net.thedudemc.assemble.init;
 
-import net.thedudemc.schedulebot.config.BotConfig;
+import net.thedudemc.assemble.config.BotConfig;
 
 public class BotConfigs {
 

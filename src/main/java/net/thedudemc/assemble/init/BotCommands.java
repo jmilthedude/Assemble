@@ -1,8 +1,8 @@
-package net.thedudemc.schedulebot.init;
+package net.thedudemc.assemble.init;
 
-import net.thedudemc.schedulebot.command.ConfigCommand;
-import net.thedudemc.schedulebot.command.ICommand;
-import net.thedudemc.schedulebot.command.ScheduleCommand;
+import net.thedudemc.assemble.command.ConfigCommand;
+import net.thedudemc.assemble.command.ICommand;
+import net.thedudemc.assemble.command.ScheduleCommand;
 
 import java.util.HashMap;
 

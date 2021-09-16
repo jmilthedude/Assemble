@@ -1,4 +1,4 @@
-package net.thedudemc.schedulebot.database.dao;
+package net.thedudemc.assemble.database.dao;
 
 import java.util.List;
 

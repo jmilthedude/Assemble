@@ -1,10 +1,10 @@
-package net.thedudemc.schedulebot.task;
+package net.thedudemc.assemble.task;
 
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.thedudemc.schedulebot.ScheduleBot;
-import net.thedudemc.schedulebot.database.DatabaseManager;
-import net.thedudemc.schedulebot.init.BotConfigs;
-import net.thedudemc.schedulebot.models.ScheduledMessage;
+import net.thedudemc.assemble.Assemble;
+import net.thedudemc.assemble.database.DatabaseManager;
+import net.thedudemc.assemble.init.BotConfigs;
+import net.thedudemc.assemble.models.ScheduledMessage;
 
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
@@ -24,7 +24,7 @@ public class MessageExecutorTask extends SchedulerTask {
             List<ScheduledMessage> messages = DatabaseManager.getInstance().getMessageDao().getMessagesToExecute(executableIds);
 
             for (ScheduledMessage message : messages) {
-                TextChannel channel = ScheduleBot.getJDA().getTextChannelById(message.getChannelId());
+                TextChannel channel = Assemble.getJDA().getTextChannelById(message.getChannelId());
                 if (channel == null) continue;
 
                 message.sendToChannel(channel);

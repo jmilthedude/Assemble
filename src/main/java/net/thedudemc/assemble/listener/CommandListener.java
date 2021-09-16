@@ -1,12 +1,12 @@
-package net.thedudemc.schedulebot.listener;
+package net.thedudemc.assemble.listener;
 
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.thedudemc.schedulebot.ScheduleBot;
-import net.thedudemc.schedulebot.command.ICommand;
-import net.thedudemc.schedulebot.init.BotCommands;
+import net.thedudemc.assemble.Assemble;
+import net.thedudemc.assemble.command.ICommand;
+import net.thedudemc.assemble.init.BotCommands;
 import org.jetbrains.annotations.NotNull;
 
 public class CommandListener extends ListenerAdapter {
@@ -28,10 +28,10 @@ public class CommandListener extends ListenerAdapter {
             if (command.canExecute(member)) {
                 command.execute(guild, member, event.getChannel(), event.getMessage(), args);
             } else {
-                ScheduleBot.getLogger().error(event.getMember().getEffectiveName() + " tried to run the command '" + commandName + "' without the required permission.");
+                Assemble.getLogger().error(event.getMember().getEffectiveName() + " tried to run the command '" + commandName + "' without the required permission.");
             }
         } catch (IllegalArgumentException e) {
-            ScheduleBot.getLogger().error(e.getMessage());
+            Assemble.getLogger().error(e.getMessage());
         }
     }
 }

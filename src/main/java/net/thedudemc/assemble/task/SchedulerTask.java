@@ -1,6 +1,4 @@
-package net.thedudemc.schedulebot.task;
-
-import net.thedudemc.schedulebot.ScheduleBot;
+package net.thedudemc.assemble.task;
 
 import java.util.concurrent.TimeUnit;
 

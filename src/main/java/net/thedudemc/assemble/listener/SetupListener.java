@@ -1,4 +1,4 @@
-package net.thedudemc.schedulebot.listener;
+package net.thedudemc.assemble.listener;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
@@ -6,10 +6,10 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.thedudemc.schedulebot.ScheduleBot;
-import net.thedudemc.schedulebot.database.DatabaseManager;
-import net.thedudemc.schedulebot.init.BotConfigs;
-import net.thedudemc.schedulebot.models.ScheduledMessage;
+import net.thedudemc.assemble.Assemble;
+import net.thedudemc.assemble.database.DatabaseManager;
+import net.thedudemc.assemble.init.BotConfigs;
+import net.thedudemc.assemble.models.ScheduledMessage;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -112,7 +112,7 @@ public class SetupListener extends ListenerAdapter {
 
             channel.sendMessageEmbeds(scheduledMessage.getStatusEmbed()).queue();
         } catch (IllegalArgumentException exception) {
-            ScheduleBot.getLogger().error(exception.getMessage());
+            Assemble.getLogger().error(exception.getMessage());
         } catch (DateTimeException exception) {
             replyError(channel, "Invalid date. Try again with format \"MM/dd/yyyy HH:mm\"");
         }
@@ -164,7 +164,7 @@ public class SetupListener extends ListenerAdapter {
                 path.mkdirs();
                 image.downloadToFile("./images/" + image.getFileName())
                         .thenAccept(file -> {
-                            ScheduleBot.getLogger().info("Saved attachment to " + file.getName());
+                            Assemble.getLogger().info("Saved attachment to " + file.getName());
 
                             scheduledMessage.setImageFileName(image.getFileName());
                             scheduledMessage.setState(ScheduledMessage.SetupState.CONFIRM);
@@ -175,7 +175,7 @@ public class SetupListener extends ListenerAdapter {
                         })
                         .exceptionally(exception ->
                         {
-                            ScheduleBot.getLogger().error(exception.getMessage());
+                            Assemble.getLogger().error(exception.getMessage());
                             replyError(channel, "There was a problem downloading the image.");
                             return null;
                         });

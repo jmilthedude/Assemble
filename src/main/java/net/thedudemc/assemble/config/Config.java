@@ -1,8 +1,8 @@
-package net.thedudemc.schedulebot.config;
+package net.thedudemc.assemble.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import net.thedudemc.schedulebot.ScheduleBot;
+import net.thedudemc.assemble.Assemble;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -68,8 +68,8 @@ public abstract class Config {
         try {
             this.writeConfig();
         } catch (Exception ex) {
-            ScheduleBot.getLogger().error("There was an error writing the config to file.");
-            ScheduleBot.getLogger().error(ex.getMessage());
+            Assemble.getLogger().error("There was an error writing the config to file.");
+            Assemble.getLogger().error(ex.getMessage());
         }
     }
 }
