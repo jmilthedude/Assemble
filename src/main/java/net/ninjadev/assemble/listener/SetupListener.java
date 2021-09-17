@@ -31,7 +31,7 @@ public class SetupListener extends ListenerAdapter {
     @Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
         if (event.getAuthor().isBot() || event.isWebhookMessage()) return;
-        if (!event.getChannel().getName().equalsIgnoreCase("schedule-setup")) return;
+        if (!event.getChannel().getName().equalsIgnoreCase(BotConfigs.CONFIG.getScheduleChannel())) return;
         Member member = event.getMember();
         if (member == null) return;
 

@@ -31,7 +31,7 @@ public class ScheduleCommand implements ICommand {
     public void execute(@NotNull Guild guild, @NotNull Member member, MessageChannel messageChannel, Message message, @Nullable String[] args) {
         if (args == null || args.length == 0) return; // this command requires arguments
         if (!message.isFromType(ChannelType.TEXT)) return;
-        if (!messageChannel.getName().equalsIgnoreCase("schedule-setup")) {
+        if (!messageChannel.getName().equalsIgnoreCase(BotConfigs.CONFIG.getScheduleChannel())) {
             replyError((TextChannel) messageChannel, "You cannot send that command in this channel.");
             return;
         }

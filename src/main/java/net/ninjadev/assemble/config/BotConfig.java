@@ -16,6 +16,8 @@ public class BotConfig extends Config {
     private String timeZoneId;
     @Expose
     private String strawpollKey;
+    @Expose
+    private String scheduleChannel;
 
     @Override
     public String getName() {
@@ -30,6 +32,8 @@ public class BotConfig extends Config {
         this.timeZoneId = "Europe/London";
 
         this.strawpollKey = "changeme";
+
+        this.scheduleChannel = "schedule-setup";
     }
 
     public boolean hasPermission(Member member) {
@@ -80,5 +84,9 @@ public class BotConfig extends Config {
 
     public String getStrawpollKey() {
         return this.strawpollKey;
+    }
+
+    public String getScheduleChannel() {
+        return this.scheduleChannel;
     }
 }

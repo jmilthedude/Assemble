@@ -39,27 +39,28 @@ public class PollCommand implements ICommand {
                 String contentId = args[1];
                 deleteStrawPoll((TextChannel) channel, contentId);
                 message.delete().queue();
-                return;
-            }
-        }
-
-        String type = args[0];
-        if (type == null) return; // idk why intellij thinks this could be null at this point.
-
-        String input = message.getContentRaw().substring(message.getContentRaw().indexOf(type) + 1);
-        try {
-            Poll poll = Poll.parse(input);
-            if (type.equalsIgnoreCase("d")) {
-                createDiscordPoll(channel, poll);
-            } else if (type.equalsIgnoreCase("s")) {
-                createStrawPoll(channel, poll);
             } else {
-                replyError((TextChannel) channel, "The type of poll must be \"s\" or \"d\".");
+                replyError((TextChannel) channel, "Invalid Arguments...");
             }
-        } catch (IndexOutOfBoundsException exception) {
-            replyError((TextChannel) channel, "There was an error while trying to parse the poll command.");
-        } finally {
-            message.delete().queue();
+        } else {
+
+            String type = args[0];
+
+            String input = message.getContentRaw().substring(message.getContentRaw().indexOf(type) + 1);
+            try {
+                Poll poll = Poll.parse(input);
+                if (type.equalsIgnoreCase("d")) {
+                    createDiscordPoll(channel, poll);
+                } else if (type.equalsIgnoreCase("s")) {
+                    createStrawPoll(channel, poll);
+                } else {
+                    replyError((TextChannel) channel, "The type of poll must be \"s\" or \"d\".");
+                }
+            } catch (IndexOutOfBoundsException exception) {
+                replyError((TextChannel) channel, "There was an error while trying to parse the poll command.");
+            } finally {
+                message.delete().queue();
+            }
         }
 
     }
