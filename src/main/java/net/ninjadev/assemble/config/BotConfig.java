@@ -14,6 +14,8 @@ public class BotConfig extends Config {
     private List<String> permittedRoles = new ArrayList<>();
     @Expose
     private String timeZoneId;
+    @Expose
+    private String strawpollKey;
 
     @Override
     public String getName() {
@@ -26,6 +28,8 @@ public class BotConfig extends Config {
         this.permittedRoles.add("Moderator");
 
         this.timeZoneId = "Europe/London";
+
+        this.strawpollKey = "changeme";
     }
 
     public boolean hasPermission(Member member) {
@@ -72,5 +76,9 @@ public class BotConfig extends Config {
 
     public List<String> getPermittedRoles() {
         return new ArrayList<>(this.permittedRoles);
+    }
+
+    public String getStrawpollKey() {
+        return this.strawpollKey;
     }
 }

@@ -97,11 +97,6 @@ public class ScheduleCommand implements ICommand {
         }
     }
 
-    @Override
-    public boolean canExecute(Member member) {
-        return member.isOwner() || BotConfigs.CONFIG.hasPermission(member);
-    }
-
     private void sendMessageList(TextChannel channel, List<ScheduledMessage> messages) {
         EmbedBuilder builder = new EmbedBuilder()
                 .setTitle("Scheduled Messages")

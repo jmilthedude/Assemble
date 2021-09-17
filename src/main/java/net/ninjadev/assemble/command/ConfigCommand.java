@@ -113,9 +113,4 @@ public class ConfigCommand implements ICommand {
 
         channel.sendMessageEmbeds(builder.build()).queue();
     }
-
-    @Override
-    public boolean canExecute(Member member) {
-        return member.isOwner() || BotConfigs.CONFIG.hasPermission(member);
-    }
 }

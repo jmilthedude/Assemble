@@ -2,6 +2,7 @@ package net.ninjadev.assemble.init;
 
 import net.ninjadev.assemble.command.ConfigCommand;
 import net.ninjadev.assemble.command.ICommand;
+import net.ninjadev.assemble.command.PollCommand;
 import net.ninjadev.assemble.command.ScheduleCommand;
 
 import java.util.HashMap;
@@ -13,6 +14,7 @@ public class BotCommands {
     public static void register() {
         register(new ScheduleCommand());
         register(new ConfigCommand());
+        register(new PollCommand());
     }
 
     private static void register(ICommand command) {

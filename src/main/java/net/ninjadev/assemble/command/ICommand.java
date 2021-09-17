@@ -2,6 +2,7 @@ package net.ninjadev.assemble.command;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
+import net.ninjadev.assemble.init.BotConfigs;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -15,7 +16,9 @@ public interface ICommand {
 
     void execute(@NotNull Guild guild, @NotNull Member member, MessageChannel channel, Message message, @Nullable String[] args);
 
-    boolean canExecute(Member member);
+    default boolean canExecute(Member member) {
+        return member.isOwner() || BotConfigs.CONFIG.hasPermission(member);
+    }
 
     default void replyError(TextChannel channel, String response) {
         EmbedBuilder builder = new EmbedBuilder()
