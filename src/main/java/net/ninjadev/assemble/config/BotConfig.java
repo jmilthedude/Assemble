@@ -89,4 +89,10 @@ public class BotConfig extends Config {
     public String getScheduleChannel() {
         return this.scheduleChannel;
     }
+
+    public void setScheduleChannel(String name) {
+        this.scheduleChannel = name;
+        this.markDirty();
+        this.save();
+    }
 }

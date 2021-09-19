@@ -49,6 +49,14 @@ public class ConfigCommand implements ICommand {
                 } catch (Exception ex) {
                     replyError((TextChannel) channel, "Invalid Time Zone ID: " + args[1]);
                 }
+            } else if ("setupChannel".equalsIgnoreCase(args[0])) {
+                TextChannel setupChannel = message.getMentionedChannels().stream().findFirst().orElse(null);
+                if (setupChannel != null) {
+                    BotConfigs.CONFIG.setScheduleChannel(setupChannel.getName());
+                    replySuccess((TextChannel) channel, "Successfully set the setup channel.");
+                } else {
+                    replyError((TextChannel) channel, "No channel found by that name.");
+                }
             } else if ("roles".equalsIgnoreCase(args[0])) {
                 if ("list".equalsIgnoreCase(args[1])) {
                     printRoles((TextChannel) channel);
@@ -89,14 +97,16 @@ public class ConfigCommand implements ICommand {
         }
     }
 
-    private void printHelpMessage(TextChannel channel) {
+    @Override
+    public void printHelpMessage(TextChannel channel) {
         EmbedBuilder builder = new EmbedBuilder()
                 .setTitle("Config Help")
                 .setColor(Color.ORANGE)
                 .addField("List Roles", "\"-config roles list\"", false)
                 .addField("Add Role", "\"-config roles add <roleName>\"", false)
                 .addField("Remove Role", "\"-config roles remove <roleName>\"", false)
-                .addField("Set Timezone", "\"-config timezone <timeZoneId>\"", false);
+                .addField("Set Timezone", "\"-config timezone <timeZoneId>\"", false)
+                .addField("Set Setup Channel", "\"-config setupChannel #channel\"", false);
         channel.sendMessageEmbeds(builder.build()).queue();
     }
 

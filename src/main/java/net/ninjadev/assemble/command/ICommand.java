@@ -20,6 +20,8 @@ public interface ICommand {
         return member.isOwner() || BotConfigs.CONFIG.hasPermission(member);
     }
 
+    void printHelpMessage(TextChannel channel);
+
     default void replyError(TextChannel channel, String response) {
         EmbedBuilder builder = new EmbedBuilder()
                 .setTitle("Invalid Command")

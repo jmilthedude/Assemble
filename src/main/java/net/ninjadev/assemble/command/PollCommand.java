@@ -4,12 +4,14 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.vdurmont.emoji.Emoji;
 import com.vdurmont.emoji.EmojiManager;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 import net.ninjadev.assemble.models.Poll;
 import net.ninjadev.assemble.models.StrawPoll;
 import net.ninjadev.assemble.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.*;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 
@@ -34,7 +36,11 @@ public class PollCommand implements ICommand {
         if (args == null || args.length == 0) return; // this command requires arguments
         if (!message.isFromType(ChannelType.TEXT)) return;
 
-        if (args.length == 2) {
+        if (args.length == 1) {
+            if (args[0].equalsIgnoreCase("help")) {
+                printHelpMessage((TextChannel) channel);
+            }
+        } else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("delete")) {
                 String contentId = args[1];
                 deleteStrawPoll((TextChannel) channel, contentId);
@@ -63,6 +69,18 @@ public class PollCommand implements ICommand {
             }
         }
 
+    }
+
+    @Override
+    public void printHelpMessage(TextChannel channel) {
+        EmbedBuilder builder = new EmbedBuilder()
+                .setTitle("Poll Help")
+                .setColor(Color.ORANGE)
+                .addField("Create Discord Poll", "\"-poll d {title} [option1, option2, option3]\"", false)
+                .addField("Create StrawPoll", "\"-poll s {title} [option1, option2, option3]\"", false)
+                .addField("Delete StrawPoll", "\"-poll delete <ID>\"", false)
+                .addField("Please Note:", "The title must be wrapped in {} as shown above and the same goes with the options with []. \n Options must be separated by commas.", false);
+        channel.sendMessageEmbeds(builder.build()).queue();
     }
 
     private void deleteStrawPoll(TextChannel channel, String contentId) {

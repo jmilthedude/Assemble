@@ -113,7 +113,8 @@ public class ScheduleCommand implements ICommand {
         channel.sendMessageEmbeds(builder.build()).queue();
     }
 
-    private void printHelpMessage(TextChannel channel) {
+    @Override
+    public void printHelpMessage(TextChannel channel) {
         EmbedBuilder builder = new EmbedBuilder()
                 .setTitle("Schedule Help")
                 .setColor(Color.ORANGE)
@@ -121,6 +122,7 @@ public class ScheduleCommand implements ICommand {
                 .addBlankField(false)
                 .addField("Start Setup", "\"-schedule new\"", false)
                 .addField("List Scheduled Messages", "\"-schedule list\"", false)
+                .addField("Show A Message", "\"-schedule show <ID>\"", false)
                 .addField("Delete Message", "\"-schedule delete <ID>\"", false);
         channel.sendMessageEmbeds(builder.build()).queue();
     }
