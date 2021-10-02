@@ -163,6 +163,7 @@ public class ScheduledMessage {
             channel.sendMessageEmbeds(builder.build()).queue(message -> {
                 if (this.title.equalsIgnoreCase("daily")) {
                     message.addReaction("\u2705").queue();
+                    message.addReaction("\u274C").queue();
                 }
             });
         }
