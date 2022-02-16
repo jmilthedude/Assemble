@@ -153,7 +153,7 @@ public class SetupListener extends ListenerAdapter {
                 scheduledMessage.setImageFileName("");
                 scheduledMessage.setState(ScheduledMessage.SetupState.CONFIRM);
 
-                scheduledMessage.sendToChannel(channel);
+                scheduledMessage.send(channel, true);
                 channel.sendMessageEmbeds(scheduledMessage.getStatusEmbed()).queue();
             } else if (message.getAttachments().isEmpty()) throw new IllegalArgumentException("No image uploaded.");
 
@@ -169,7 +169,7 @@ public class SetupListener extends ListenerAdapter {
                             scheduledMessage.setImageFileName(image.getFileName());
                             scheduledMessage.setState(ScheduledMessage.SetupState.CONFIRM);
 
-                            scheduledMessage.sendToChannel(channel);
+                            scheduledMessage.send(channel, true);
 
                             channel.sendMessageEmbeds(scheduledMessage.getStatusEmbed()).queue();
                         })

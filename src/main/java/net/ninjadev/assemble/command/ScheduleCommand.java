@@ -2,6 +2,7 @@ package net.ninjadev.assemble.command;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
+import net.ninjadev.assemble.Assemble;
 import net.ninjadev.assemble.database.DatabaseManager;
 import net.ninjadev.assemble.init.BotConfigs;
 import net.ninjadev.assemble.listener.SetupListener;
@@ -62,7 +63,7 @@ public class ScheduleCommand implements ICommand {
             if ("show".equalsIgnoreCase(args[0])) {
                 ScheduledMessage scheduledMessage = DatabaseManager.getInstance().getMessageDao().select(messageId);
                 if (scheduledMessage != null) {
-                    scheduledMessage.sendToChannel(channel);
+                    scheduledMessage.send(channel, true);
                 } else {
                     replyError(channel, "No message found with that ID.");
                 }
@@ -107,6 +108,14 @@ public class ScheduleCommand implements ICommand {
             if (message.isRecurring() && message.getRecurrence() != null) {
                 messageBody += "Interval: Every " + message.getRecurrence().getInterval() + " " + message.getRecurrence().getUnit().toString().toLowerCase() + "\n";
             }
+            GuildChannel assigned = Assemble.getJDA().getGuildChannelById(message.getChannelId());
+            if (assigned != null) {
+                Category category = assigned.getParent();
+                if (category != null) {
+                    messageBody += assigned.getAsMention() + " in " + category.getAsMention() + "\n";
+                }
+            }
+            messageBody += "\n\n";
             builder.addField("Message ID: " + message.getId(), messageBody, false);
         });
 

@@ -27,7 +27,7 @@ public class MessageExecutorTask extends SchedulerTask {
                 TextChannel channel = Assemble.getJDA().getTextChannelById(message.getChannelId());
                 if (channel == null) continue;
 
-                message.sendToChannel(channel);
+                message.send(channel, false);
 
                 if (message.isRecurring()) {
                     message.setExecutionDate(getNewDate(message));

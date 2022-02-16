@@ -1,17 +1,23 @@
 package net.ninjadev.assemble.models;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.MessageBuilder;
+import net.dv8tion.jda.api.entities.Category;
+import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.ninjadev.assemble.Assemble;
 import net.ninjadev.assemble.init.BotConfigs;
 
 import javax.annotation.Nullable;
-import java.awt.*;
 import java.io.File;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.awt.Color;
 
 public class ScheduledMessage {
     private int id;
@@ -139,8 +145,9 @@ public class ScheduledMessage {
     }
 
 
-    public void sendToChannel(TextChannel channel) {
+    public void send(TextChannel channel, boolean test) {
         EmbedBuilder builder = new EmbedBuilder();
+        final boolean hasMentions = this.hasMentions();
         String title = this.title;
         if (this.title.equalsIgnoreCase("Daily")) {
             int day = ZonedDateTime.now(BotConfigs.CONFIG.getTimeZone()).getDayOfMonth();
@@ -151,12 +158,24 @@ public class ScheduledMessage {
         if (this.content != null && !this.content.isEmpty()) {
             builder.addField("", this.content, false);
         }
+        if (test) {
+            GuildChannel assigned = Assemble.getJDA().getGuildChannelById(getChannelId());
+            if (assigned != null) {
+                Category category = assigned.getParent();
+                if (category != null) {
+                    builder.addField("", assigned.getAsMention() + " in " + category.getAsMention(), false);
+                }
+            }
+        }
         if (this.imageFileName != null && !this.imageFileName.isEmpty()) {
             File imageFile = new File("./images/" + this.imageFileName);
             builder.setImage("attachment://" + this.imageFileName);
             channel.sendFile(imageFile).setEmbeds(builder.build()).queue(message -> {
                 if (this.title.equalsIgnoreCase("daily")) {
                     message.addReaction("\u2705").queue();
+                }
+                if (hasMentions) {
+                    sendMentions(channel);
                 }
             });
         } else {
@@ -165,8 +184,18 @@ public class ScheduledMessage {
                     message.addReaction("\u2705").queue();
                     message.addReaction("\u274C").queue();
                 }
+                if (hasMentions) {
+                    sendMentions(channel);
+                }
             });
         }
+    }
+
+    private void sendMentions(TextChannel channel) {
+        List<String> mentions = this.getMentions();
+        MessageBuilder messageBuilder = new MessageBuilder();
+        mentions.forEach(s -> messageBuilder.append(s).append(" "));
+        channel.sendMessage(messageBuilder.build()).queue();
     }
 
     public MessageEmbed getStatusEmbed() {
@@ -255,6 +284,16 @@ public class ScheduledMessage {
                 ", imageFileName='" + imageFileName + '\'' +
                 ", state=" + state +
                 '}';
+    }
+
+    public boolean hasMentions() {
+        if (this.content == null || this.content.isEmpty()) return false;
+        String[] strings = this.content.split(" ");
+        return Arrays.stream(strings).anyMatch(s -> s.startsWith("@"));
+    }
+
+    public List<String> getMentions() {
+        return Arrays.stream(this.content.split(" ")).filter(s -> s.startsWith("@")).collect(Collectors.toList());
     }
 
     public static class Recurrence {

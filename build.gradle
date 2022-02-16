@@ -8,7 +8,7 @@ apply plugin: 'com.github.johnrengelman.shadow'
 
 mainClassName = "net.ninjadev.assemble.Assemble"
 group 'net.ninjadev'
-version '1.0'
+version '1.1'
 
 sourceCompatibility = 1.16
 
