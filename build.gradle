@@ -22,8 +22,8 @@ repositories {
 
 dependencies {
     implementation("net.dv8tion:JDA:4.3.0_296")
-    implementation('com.google.code.gson:gson:2.8.8')
-    implementation('ch.qos.logback:logback-classic:1.2.5')
+    implementation('com.google.code.gson:gson:2.8.9')
+    implementation('ch.qos.logback:logback-classic:1.2.10')
     implementation('org.xerial:sqlite-jdbc:3.36.0.2')
     implementation("com.vdurmont:emoji-java:5.1.1")
 }

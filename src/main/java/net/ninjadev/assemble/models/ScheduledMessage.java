@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.ninjadev.assemble.Assemble;
 import net.ninjadev.assemble.init.BotConfigs;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -32,6 +33,7 @@ public class ScheduledMessage {
     @Nullable
     private String imageFileName;
     private SetupState state;
+    private boolean editMode;
 
     public ScheduledMessage(Long ownerId) {
         this.ownerId = ownerId;
@@ -52,6 +54,7 @@ public class ScheduledMessage {
         this.recurrence = recurrence;
         this.imageFileName = imageFileName;
         this.state = state;
+        this.editMode = false;
     }
 
     public static ScheduledMessage ofDaily(long ownerId, long channelId, ZonedDateTime executionDate, String message) {
@@ -158,15 +161,6 @@ public class ScheduledMessage {
         if (this.content != null && !this.content.isEmpty()) {
             builder.addField("", this.content, false);
         }
-        if (test) {
-            GuildChannel assigned = Assemble.getJDA().getGuildChannelById(getChannelId());
-            if (assigned != null) {
-                Category category = assigned.getParent();
-                if (category != null) {
-                    builder.addField("", assigned.getAsMention() + " in " + category.getAsMention(), false);
-                }
-            }
-        }
         if (this.imageFileName != null && !this.imageFileName.isEmpty()) {
             File imageFile = new File("./images/" + this.imageFileName);
             builder.setImage("attachment://" + this.imageFileName);
@@ -189,6 +183,31 @@ public class ScheduledMessage {
                 }
             });
         }
+        if (test) {
+            EmbedBuilder embedBuilder = getMessageDetails();
+            channel.sendMessageEmbeds(embedBuilder.build()).queue();
+        }
+    }
+
+    @NotNull
+    private EmbedBuilder getMessageDetails() {
+        EmbedBuilder embedBuilder = new EmbedBuilder()
+                .setTitle("Message Details")
+                .setColor(Color.CYAN);
+        String messageBody = "Execution Date: " + this.getExecutionDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm")) + "\n";
+        if (this.isRecurring() && this.getRecurrence() != null) {
+            messageBody += "Interval: Every " + this.getRecurrence().getInterval() + " " + this.getRecurrence().getUnit().toString().toLowerCase() + "\n";
+        }
+        GuildChannel assigned = Assemble.getJDA().getGuildChannelById(this.getChannelId());
+        if (assigned != null) {
+            Category category = assigned.getParent();
+            if (category != null) {
+                messageBody += assigned.getAsMention() + " in " + category.getAsMention() + "\n";
+            }
+        }
+        messageBody += "\n\n";
+        embedBuilder.addField("Message ID: " + this.getId(), messageBody, false);
+        return embedBuilder;
     }
 
     private void sendMentions(TextChannel channel) {
@@ -198,9 +217,17 @@ public class ScheduledMessage {
         channel.sendMessage(messageBuilder.build()).queue();
     }
 
+    public boolean isEditMode() {
+        return editMode;
+    }
+
+    public void setEditMode(boolean mode) {
+        this.editMode = mode;
+    }
+
     public MessageEmbed getStatusEmbed() {
         switch (this.getState()) {
-            case NEW -> {
+            case NEW, TITLE -> {
                 return new EmbedBuilder()
                         .setTitle("Set a Title")
                         .addField("", "example: Scheduled Message", false)

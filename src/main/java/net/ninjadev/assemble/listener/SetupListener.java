@@ -67,10 +67,14 @@ public class SetupListener extends ListenerAdapter {
         scheduledMessage.setState(ScheduledMessage.SetupState.TITLE);
     }
 
+    private static void startEditDialog(ScheduledMessage scheduledMessage, TextChannel channel) {
+        channel.sendMessageEmbeds(scheduledMessage.getStatusEmbed()).queue();
+    }
+
     private void setMessageTitle(ScheduledMessage scheduledMessage, TextChannel channel, Message message) {
         String title = message.getContentRaw();
         scheduledMessage.setTitle(title);
-        scheduledMessage.setState(ScheduledMessage.SetupState.CONTENT);
+        scheduledMessage.setState(scheduledMessage.isEditMode() ? ScheduledMessage.SetupState.CONFIRM : ScheduledMessage.SetupState.CONTENT);
 
         channel.sendMessageEmbeds(scheduledMessage.getStatusEmbed()).queue();
     }
@@ -78,7 +82,7 @@ public class SetupListener extends ListenerAdapter {
     private void setMessageContent(ScheduledMessage scheduledMessage, TextChannel channel, Message message) {
         String content = message.getContentRaw();
         scheduledMessage.setContent(content);
-        scheduledMessage.setState(ScheduledMessage.SetupState.CHANNEL);
+        scheduledMessage.setState(scheduledMessage.isEditMode() ? ScheduledMessage.SetupState.CONFIRM : ScheduledMessage.SetupState.CHANNEL);
 
         channel.sendMessageEmbeds(scheduledMessage.getStatusEmbed()).queue();
     }
@@ -88,7 +92,7 @@ public class SetupListener extends ListenerAdapter {
         if (requestedOptional.isPresent()) {
             TextChannel requestedChannel = requestedOptional.get();
             scheduledMessage.setChannelId(requestedChannel.getIdLong());
-            scheduledMessage.setState(ScheduledMessage.SetupState.DATE);
+            scheduledMessage.setState(scheduledMessage.isEditMode() ? ScheduledMessage.SetupState.CONFIRM : ScheduledMessage.SetupState.DATE);
 
             channel.sendMessageEmbeds(scheduledMessage.getStatusEmbed()).queue();
         } else {
@@ -108,7 +112,7 @@ public class SetupListener extends ListenerAdapter {
                 return;
             }
             scheduledMessage.setExecutionDate(date);
-            scheduledMessage.setState(ScheduledMessage.SetupState.RECURRING);
+            scheduledMessage.setState(scheduledMessage.isEditMode() ? ScheduledMessage.SetupState.CONFIRM : ScheduledMessage.SetupState.RECURRING);
 
             channel.sendMessageEmbeds(scheduledMessage.getStatusEmbed()).queue();
         } catch (IllegalArgumentException exception) {
@@ -123,7 +127,7 @@ public class SetupListener extends ListenerAdapter {
         if (content.equalsIgnoreCase("none")) {
             scheduledMessage.setRecurring(false);
             scheduledMessage.setRecurrence(null);
-            scheduledMessage.setState(ScheduledMessage.SetupState.IMAGE);
+            scheduledMessage.setState(scheduledMessage.isEditMode() ? ScheduledMessage.SetupState.CONFIRM : ScheduledMessage.SetupState.IMAGE);
         } else {
             try {
                 String[] args = content.split(" ");
@@ -133,7 +137,7 @@ public class SetupListener extends ListenerAdapter {
                     ScheduledMessage.Recurrence recurrence = new ScheduledMessage.Recurrence(interval, unit);
                     scheduledMessage.setRecurring(true);
                     scheduledMessage.setRecurrence(recurrence);
-                    scheduledMessage.setState(ScheduledMessage.SetupState.IMAGE);
+                    scheduledMessage.setState(scheduledMessage.isEditMode() ? ScheduledMessage.SetupState.CONFIRM : ScheduledMessage.SetupState.IMAGE);
 
                 } else
                     throw new IllegalArgumentException("Invalid arguments. Must be <number> <timeUnit> (ie: 20 minutes, 24 hours, 7 days, 1 years)");
@@ -189,9 +193,15 @@ public class SetupListener extends ListenerAdapter {
         if (message.getContentRaw().equalsIgnoreCase("confirm")) {
             scheduledMessage.setState(ScheduledMessage.SetupState.READY);
 
-            int id = DatabaseManager.getInstance().getMessageDao().insert(scheduledMessage);
-
-            scheduledMessage.setId(id);
+            if (!scheduledMessage.isEditMode()) {
+                int id = DatabaseManager.getInstance().getMessageDao().insert(scheduledMessage);
+                scheduledMessage.setId(id);
+            } else {
+                if (DatabaseManager.getInstance().getMessageDao().update(scheduledMessage) < 1) {
+                    replyError(channel, "Failed to update the message..");
+                    return;
+                }
+            }
 
             channel.sendMessageEmbeds(scheduledMessage.getStatusEmbed()).queue();
 
@@ -203,6 +213,14 @@ public class SetupListener extends ListenerAdapter {
         if (activeUsers.containsKey(member.getIdLong())) return false;
 
         activeUsers.put(member.getIdLong(), new ScheduledMessage(member.getIdLong()));
+        return true;
+    }
+
+    public static boolean initiateScheduleEdit(Member member, ScheduledMessage message, TextChannel channel) {
+        if (activeUsers.containsKey(member.getIdLong())) return false;
+
+        activeUsers.put(member.getIdLong(), message);
+        startEditDialog(message, channel);
         return true;
     }
 

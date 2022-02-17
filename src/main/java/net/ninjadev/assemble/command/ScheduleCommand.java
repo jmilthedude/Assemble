@@ -1,12 +1,16 @@
 package net.ninjadev.assemble.command;
 
+import com.vdurmont.emoji.EmojiParser;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.*;
 import net.ninjadev.assemble.Assemble;
 import net.ninjadev.assemble.database.DatabaseManager;
 import net.ninjadev.assemble.init.BotConfigs;
+import net.ninjadev.assemble.listener.EditListener;
 import net.ninjadev.assemble.listener.SetupListener;
 import net.ninjadev.assemble.models.ScheduledMessage;
+import net.ninjadev.assemble.util.EditOption;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,6 +19,7 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+import java.util.Arrays;
 import java.util.List;
 
 public class ScheduleCommand implements ICommand {
@@ -60,19 +65,22 @@ public class ScheduleCommand implements ICommand {
             String messageIdInput = args[1];
             if (messageIdInput == null) throw new IllegalArgumentException();
             int messageId = Integer.parseInt(messageIdInput);
+            ScheduledMessage scheduledMessage = DatabaseManager.getInstance().getMessageDao().select(messageId);
+            if (scheduledMessage == null) {
+                replyError(channel, "No message found with that ID.");
+                return;
+            }
             if ("show".equalsIgnoreCase(args[0])) {
-                ScheduledMessage scheduledMessage = DatabaseManager.getInstance().getMessageDao().select(messageId);
-                if (scheduledMessage != null) {
-                    scheduledMessage.send(channel, true);
-                } else {
-                    replyError(channel, "No message found with that ID.");
-                }
+                scheduledMessage.send(channel, true);
             } else if ("delete".equalsIgnoreCase(args[0])) {
                 if (DatabaseManager.getInstance().getMessageDao().delete(messageId)) {
                     replySuccess(channel, "The message was successfully deleted. ID: " + messageId);
                 } else {
                     replyError(channel, "No message found with that ID or there was an error. See console if you believe this was an error.");
                 }
+            } else if ("edit".equalsIgnoreCase(args[0])) {
+                EditListener.addEditingUser(member.getIdLong(), scheduledMessage);
+                createEditMessage(channel, scheduledMessage);
             } else {
                 replyError(channel, "Invalid Argument.");
             }
@@ -96,6 +104,31 @@ public class ScheduleCommand implements ICommand {
         } else {
             replyError(channel, "Invalid Arguments.");
         }
+    }
+
+    private void createEditMessage(TextChannel channel, ScheduledMessage scheduledMessage) {
+        scheduledMessage.send(channel, true);
+        MessageBuilder messageBuilder = new MessageBuilder().setEmbeds(new EmbedBuilder()
+                .setTitle("Message Confirmation")
+                .setColor(new Color(12345667))
+                .addField("", "Your message is shown above! To edit any part of your message, " +
+                                "use one of the emojis on this message. Be sure to confirm your new message below." +
+                                "\n\n" +
+                                EditOption.TITLE.getUnicode() + " Edit title\n" +
+                                EditOption.CONTENT.getUnicode() + " Edit content\n" +
+                                EditOption.CHANNEL.getUnicode() + " Edit destination channel\n" +
+                                EditOption.DATE.getUnicode() + " Edit first message time\n" +
+                                EditOption.INTERVAL.getUnicode() + " Edit message interval\n" +
+                                EditOption.IMAGE.getUnicode() + " Add image" +
+                                "\n\n" +
+                                EditOption.CANCEL.getUnicode() + " Cancel",
+                        true)
+                .build());
+        channel.sendMessage(messageBuilder.build()).queue(message -> {
+            Arrays.stream(EditOption.values()).forEach(option -> {
+                message.addReaction(option.getUnicode()).queue();
+            });
+        });
     }
 
     private void sendMessageList(TextChannel channel, List<ScheduledMessage> messages) {
