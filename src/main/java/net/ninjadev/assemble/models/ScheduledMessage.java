@@ -159,7 +159,12 @@ public class ScheduledMessage {
         builder.setTitle(title);
         builder.setColor(Color.MAGENTA);
         if (this.content != null && !this.content.isEmpty()) {
-            builder.addField("", this.content, false);
+            if (this.content.length() > 1024) {
+                String[] parts = splitPreservingWords(this.content, 1024);
+                Arrays.stream(parts).forEach(part -> builder.addField("", part, false));
+            } else {
+                builder.addField("", this.content, false);
+            }
         }
         if (this.imageFileName != null && !this.imageFileName.isEmpty()) {
             File imageFile = new File("./images/" + this.imageFileName);
@@ -187,6 +192,10 @@ public class ScheduledMessage {
             EmbedBuilder embedBuilder = getMessageDetails();
             channel.sendMessageEmbeds(embedBuilder.build()).queue();
         }
+    }
+
+    private String[] splitPreservingWords(String text, int length) {
+        return text.replaceAll("(?:\\s*)(.{1," + length + "})(?:\\s+|\\s*$)", "$1\n").split("\n");
     }
 
     @NotNull
