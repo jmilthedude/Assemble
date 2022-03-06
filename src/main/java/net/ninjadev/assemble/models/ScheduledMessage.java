@@ -34,6 +34,7 @@ public class ScheduledMessage {
     private String imageFileName;
     private SetupState state;
     private boolean editMode;
+    private boolean lastDay;
 
     public ScheduledMessage(Long ownerId) {
         this.ownerId = ownerId;
@@ -43,7 +44,7 @@ public class ScheduledMessage {
     public ScheduledMessage(int id, String title, String content,
                             long channelId, long ownerId, ZonedDateTime executionDate,
                             boolean recurring, @Nullable Recurrence recurrence, @Nullable String imageFileName,
-                            SetupState state) {
+                            SetupState state, boolean isLastDay) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -55,6 +56,7 @@ public class ScheduledMessage {
         this.imageFileName = imageFileName;
         this.state = state;
         this.editMode = false;
+        this.lastDay = isLastDay;
     }
 
     public static ScheduledMessage ofDaily(long ownerId, long channelId, ZonedDateTime executionDate, String message) {
@@ -232,6 +234,14 @@ public class ScheduledMessage {
 
     public void setEditMode(boolean mode) {
         this.editMode = mode;
+    }
+
+    public void setLastDay(boolean lastDay) {
+        this.lastDay = lastDay;
+    }
+
+    public boolean isLastDay() {
+        return lastDay;
     }
 
     public MessageEmbed getStatusEmbed() {

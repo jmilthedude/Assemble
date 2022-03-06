@@ -53,6 +53,7 @@ public class DatabaseManager {
         if (messageDao == null) {
             messageDao = new ScheduleMessageDAO();
             messageDao.createTable("Messages");
+            messageDao.addColumnIfMissing();
         }
 
         return messageDao;

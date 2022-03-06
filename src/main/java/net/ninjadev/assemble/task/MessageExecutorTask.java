@@ -8,6 +8,8 @@ import net.ninjadev.assemble.init.BotConfigs;
 
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -47,6 +49,10 @@ public class MessageExecutorTask extends SchedulerTask {
         int interval = recurrence.getInterval();
         ChronoUnit chronoUnit = recurrence.getUnit();
 
-        return now.plus(interval, chronoUnit).truncatedTo(ChronoUnit.MINUTES);
+        ZonedDateTime next = now.plus(interval, chronoUnit).truncatedTo(ChronoUnit.MINUTES);
+        if (scheduledMessage.isLastDay()) {
+            next = next.plusDays(next.with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth() - next.getDayOfMonth());
+        }
+        return next;
     }
 }

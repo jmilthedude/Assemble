@@ -20,6 +20,8 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalAdjusters;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -112,6 +114,9 @@ public class SetupListener extends ListenerAdapter {
                 return;
             }
             scheduledMessage.setExecutionDate(date);
+            if (date.with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth() == date.getDayOfMonth()) {
+                scheduledMessage.setLastDay(true);
+            }
             scheduledMessage.setState(scheduledMessage.isEditMode() ? ScheduledMessage.SetupState.CONFIRM : ScheduledMessage.SetupState.RECURRING);
 
             channel.sendMessageEmbeds(scheduledMessage.getStatusEmbed()).queue();

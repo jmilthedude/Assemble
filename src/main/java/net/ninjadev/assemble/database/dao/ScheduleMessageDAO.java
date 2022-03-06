@@ -25,6 +25,20 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
     private static final String INTERVAL = "Interval";
     private static final String TIME_UNIT = "TimeUnit";
     private static final String IMAGE = "ImageFileName";
+    private static final String LAST_DAY = "LastDay";
+
+    public void addColumnIfMissing() {
+        String query = "ALTER TABLE \"Messages\" ADD " + LAST_DAY + " INTEGER;";
+
+        try (Connection conn = DatabaseManager.getInstance().getConnection()) {
+            try (Statement statement = conn.createStatement()) {
+                statement.execute(query);
+            }
+        } catch (SQLException exception) {
+            if (exception.getMessage().contains("duplicate")) return;
+            Assemble.getLogger().error(exception.getMessage());
+        }
+    }
 
     @Override
     public void createTable(String name) {
@@ -39,6 +53,7 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
                 "\"" + INTERVAL + "\" INTEGER," +
                 "\"" + TIME_UNIT + "\" TEXT," +
                 "\"" + IMAGE + "\" TEXT," +
+                "\"" + LAST_DAY + "\" INTEGER," +
                 "PRIMARY KEY(" + "\"" + ID + "\" AUTOINCREMENT)" +
                 ");";
 
@@ -73,10 +88,11 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
                         recurrence = new ScheduledMessage.Recurrence(interval, timeUnit);
                     }
                     String imageFileName = result.getString(IMAGE);
+                    boolean isLastDay = result.getBoolean(LAST_DAY);
 
                     return new ScheduledMessage(id, title, content,
                             channelId, ownerId, executionDate, recurring,
-                            recurrence, imageFileName, ScheduledMessage.SetupState.READY
+                            recurrence, imageFileName, ScheduledMessage.SetupState.READY, isLastDay
                     );
                 }
             }
@@ -109,10 +125,11 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
                         recurrence = new ScheduledMessage.Recurrence(interval, timeUnit);
                     }
                     String imageFileName = result.getString(IMAGE);
+                    boolean isLastDay = result.getBoolean(LAST_DAY);
 
                     messages.add(new ScheduledMessage(id, title, content,
                             channelId, ownerId, executionDate, recurring,
-                            recurrence, imageFileName, ScheduledMessage.SetupState.READY
+                            recurrence, imageFileName, ScheduledMessage.SetupState.READY, isLastDay
                     ));
                 }
             }
@@ -134,8 +151,9 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
                 RECURRING + ", " +
                 INTERVAL + ", " +
                 TIME_UNIT + ", " +
-                IMAGE + ") " +
-                "VALUES(?,?,?,?,?,?,?,?,?)";
+                IMAGE + ", " +
+                LAST_DAY + ") " +
+                "VALUES(?,?,?,?,?,?,?,?,?,?)";
 
         try (Connection connection = DatabaseManager.getInstance().getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(query)) {
@@ -156,6 +174,7 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
                     }
                 }
                 statement.setString(9, data.getImageFileName() == null ? "" : data.getImageFileName());
+                statement.setBoolean(10, data.isLastDay());
 
                 int affectedRows = statement.executeUpdate();
 
@@ -188,7 +207,8 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
                 " " + RECURRING + " = ?," +
                 " " + INTERVAL + " = ?," +
                 " " + TIME_UNIT + " = ?," +
-                " " + IMAGE + " = ? WHERE ID = ?";
+                " " + IMAGE + " = ?," +
+                " " + LAST_DAY + " = ? WHERE ID = ?";
 
         try (Connection connection = DatabaseManager.getInstance().getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(query)) {
@@ -209,7 +229,8 @@ public class ScheduleMessageDAO implements DataAccessObject<ScheduledMessage> {
                     }
                 }
                 statement.setString(9, data.getImageFileName() == null ? "" : data.getImageFileName());
-                statement.setInt(10, data.getId());
+                statement.setBoolean(10, data.isLastDay());
+                statement.setInt(11, data.getId());
 
                 int affectedRows = statement.executeUpdate();
 
