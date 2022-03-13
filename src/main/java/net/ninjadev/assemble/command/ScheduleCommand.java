@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
 
 public class ScheduleCommand implements ICommand {
@@ -132,27 +132,35 @@ public class ScheduleCommand implements ICommand {
     }
 
     private void sendMessageList(TextChannel channel, List<ScheduledMessage> messages) {
-        EmbedBuilder builder = new EmbedBuilder()
-                .setTitle("Scheduled Messages")
-                .setColor(Color.CYAN);
-        messages.forEach(message -> {
-            String messageBody = "Title: " + message.getTitle() + "\n" +
-                    "Execution Date: " + message.getExecutionDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm")) + "\n";
-            if (message.isRecurring() && message.getRecurrence() != null) {
-                messageBody += "Interval: Every " + message.getRecurrence().getInterval() + " " + message.getRecurrence().getUnit().toString().toLowerCase() + "\n";
-            }
-            GuildChannel assigned = Assemble.getJDA().getGuildChannelById(message.getChannelId());
-            if (assigned != null) {
-                Category category = assigned.getParent();
-                if (category != null) {
-                    messageBody += assigned.getAsMention() + " in " + category.getAsMention() + "\n";
+        Collection<List<ScheduledMessage>> grouped = new ArrayList<>();
+        for (int i = 0; i < messages.size(); i += 10) {
+            grouped.add(messages.subList(i, Math.min(messages.size(), i + 10)));
+        }
+        for (List<ScheduledMessage> list : grouped) {
+            int index = messages.indexOf(list.get(0)) + 1;
+            EmbedBuilder builder = new EmbedBuilder()
+                    .setTitle("Scheduled Messages (" + index + "/" + Math.min(messages.size(), index + 9) + ")")
+                    .setColor(Color.CYAN);
+            list.forEach(message -> {
+                String messageBody = "Title: " + message.getTitle() + "\n" +
+                        "Execution Date: " + message.getExecutionDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm")) + "\n";
+                if (message.isRecurring() && message.getRecurrence() != null) {
+                    messageBody += "Interval: Every " + message.getRecurrence().getInterval() + " " + message.getRecurrence().getUnit().toString().toLowerCase() + "\n";
                 }
-            }
-            messageBody += "\n\n";
-            builder.addField("Message ID: " + message.getId(), messageBody, false);
-        });
+                GuildChannel assigned = Assemble.getJDA().getGuildChannelById(message.getChannelId());
+                if (assigned != null) {
+                    Category category = assigned.getParent();
+                    if (category != null) {
+                        messageBody += assigned.getAsMention() + " in " + category.getAsMention() + "\n";
+                    }
+                }
+                messageBody += "\n\n";
+                builder.addField("Message ID: " + message.getId(), messageBody, false);
+            });
 
-        channel.sendMessageEmbeds(builder.build()).queue();
+            channel.sendMessageEmbeds(builder.build()).queue();
+        }
+
     }
 
     @Override
