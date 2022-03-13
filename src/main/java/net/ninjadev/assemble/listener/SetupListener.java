@@ -105,7 +105,7 @@ public class SetupListener extends ListenerAdapter {
     private void setMessageDate(ScheduledMessage scheduledMessage, TextChannel channel, Message message) {
         try {
             DateTimeFormatter formatter = new DateTimeFormatterBuilder()
-                    .appendPattern("MM/dd/yyyy HH:mm")
+                    .appendPattern("dd/MM/yyyy HH:mm")
                     .toFormatter();
             ZonedDateTime date = LocalDateTime.parse(message.getContentRaw(), formatter).atZone(BotConfigs.CONFIG.getTimeZone());
             ZonedDateTime now = ZonedDateTime.now(BotConfigs.CONFIG.getTimeZone());
@@ -123,7 +123,7 @@ public class SetupListener extends ListenerAdapter {
         } catch (IllegalArgumentException exception) {
             Assemble.getLogger().error(exception.getMessage());
         } catch (DateTimeException exception) {
-            replyError(channel, "Invalid date. Try again with format \"MM/dd/yyyy HH:mm\"");
+            replyError(channel, "Invalid date. Try again with format \"dd/MM/yyyy HH:mm\"");
         }
     }
 

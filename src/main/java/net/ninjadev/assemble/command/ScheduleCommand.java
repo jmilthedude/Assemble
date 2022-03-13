@@ -94,7 +94,7 @@ public class ScheduleCommand implements ICommand {
                 }
                 String dateString = args[2] + " " + args[3];
                 DateTimeFormatter formatter = new DateTimeFormatterBuilder()
-                        .appendPattern("MM/dd/yyyy HH:mm")
+                        .appendPattern("dd/MM/yyyy HH:mm")
                         .toFormatter();
                 ZonedDateTime date = LocalDateTime.parse(dateString, formatter).atZone(BotConfigs.CONFIG.getTimeZone());
                 ScheduledMessage scheduledMessage = ScheduledMessage.ofDaily(member.getIdLong(), desiredChannel.getIdLong(), date, "daily");
@@ -143,7 +143,7 @@ public class ScheduleCommand implements ICommand {
                     .setColor(Color.CYAN);
             list.forEach(message -> {
                 String messageBody = "Title: " + message.getTitle() + "\n" +
-                        "Execution Date: " + message.getExecutionDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm")) + "\n";
+                        "Execution Date: " + message.getExecutionDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) + "\n";
                 if (message.isRecurring() && message.getRecurrence() != null) {
                     messageBody += "Interval: Every " + message.getRecurrence().getInterval() + " " + message.getRecurrence().getUnit().toString().toLowerCase() + "\n";
                 }

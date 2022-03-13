@@ -205,7 +205,7 @@ public class ScheduledMessage {
         EmbedBuilder embedBuilder = new EmbedBuilder()
                 .setTitle("Message Details")
                 .setColor(Color.CYAN);
-        String messageBody = "Execution Date: " + this.getExecutionDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm")) + "\n";
+        String messageBody = "Execution Date: " + this.getExecutionDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) + "\n";
         if (this.isRecurring() && this.getRecurrence() != null) {
             messageBody += "Interval: Every " + this.getRecurrence().getInterval() + " " + this.getRecurrence().getUnit().toString().toLowerCase() + "\n";
         }
@@ -273,7 +273,7 @@ public class ScheduledMessage {
             case DATE -> {
                 return new EmbedBuilder()
                         .setTitle("Set the date.")
-                        .addField("", "Write in \"MM/dd/yyyy HH:mm\" format. ie 12/31/2021 14:30 for December 31, 2021 2:30pm", false)
+                        .addField("", "Write in \"dd/MM/yyyy HH:mm\" format. ie 31/12/2021 14:30 for December 31, 2021 2:30pm", false)
                         .setFooter("Type \"cancel\" to stop.")
                         .setColor(Color.CYAN)
                         .build();
@@ -308,7 +308,7 @@ public class ScheduledMessage {
                 return new EmbedBuilder()
                         .setTitle("Setup Complete!")
                         .addField("", "Message ID: " + this.getId(), false)
-                        .addField("", "Scheduled for: " + this.getExecutionDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm")), false)
+                        .addField("", "Scheduled for: " + this.getExecutionDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")), false)
                         .setColor(Color.GREEN)
                         .build();
             }
