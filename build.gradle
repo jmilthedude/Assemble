@@ -8,7 +8,7 @@ apply plugin: 'com.github.johnrengelman.shadow'
 
 mainClassName = "net.ninjadev.assemble.Assemble"
 group 'net.ninjadev'
-version '1.2.3'
+version '1.2.4'
 
 sourceCompatibility = 1.16
 
@@ -21,11 +21,11 @@ repositories {
 }
 
 dependencies {
-    implementation("net.dv8tion:JDA:4.3.0_296")
+    implementation('net.dv8tion:JDA:4.4.1_353')
     implementation('com.google.code.gson:gson:2.8.9')
     implementation('ch.qos.logback:logback-classic:1.2.10')
-    implementation('org.xerial:sqlite-jdbc:3.36.0.2')
-    implementation("com.vdurmont:emoji-java:5.1.1")
+    implementation('org.xerial:sqlite-jdbc:3.42.0.0')
+    implementation('com.vdurmont:emoji-java:5.1.1')
 }
 
 compileJava.options.encoding = 'UTF-8'

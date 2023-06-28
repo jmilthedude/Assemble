@@ -1,14 +1,13 @@
 package net.ninjadev.assemble.task;
 
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.ninjadev.assemble.models.ScheduledMessage;
 import net.ninjadev.assemble.Assemble;
 import net.ninjadev.assemble.database.DatabaseManager;
 import net.ninjadev.assemble.init.BotConfigs;
+import net.ninjadev.assemble.models.ScheduledMessage;
 
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -43,13 +42,13 @@ public class MessageExecutorTask extends SchedulerTask {
     }
 
     private ZonedDateTime getNewDate(ScheduledMessage scheduledMessage) {
-        ZonedDateTime now = ZonedDateTime.now(BotConfigs.CONFIG.getTimeZone());
+        //ZonedDateTime now = ZonedDateTime.now(BotConfigs.CONFIG.getTimeZone());
         ScheduledMessage.Recurrence recurrence = scheduledMessage.getRecurrence();
         assert recurrence != null;
         int interval = recurrence.getInterval();
         ChronoUnit chronoUnit = recurrence.getUnit();
 
-        ZonedDateTime next = now.plus(interval, chronoUnit).truncatedTo(ChronoUnit.MINUTES);
+        ZonedDateTime next = scheduledMessage.getExecutionDate().plus(interval, chronoUnit).truncatedTo(ChronoUnit.MINUTES);
         if (scheduledMessage.isLastDay()) {
             next = next.plusDays(next.with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth() - next.getDayOfMonth());
         }
